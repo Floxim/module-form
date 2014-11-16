@@ -159,7 +159,7 @@ class Field implements \ArrayAccess, Template\Entity
                 return $entity[$offset];
             }
             $real_offset = preg_replace("~^%~", '', $offset);
-            $template = fx::env('current_template');
+            $template = fx::env()->getCurrentTemplate();
             if ($template && $template instanceof Template\Template) {
                 $template_value = $template->v($real_offset . "_" . $this->getId());
                 if ($template_value) {
