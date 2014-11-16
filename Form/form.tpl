@@ -116,7 +116,7 @@
     fx:template="input[$type == 'textarea']"
     {apply input_atts /}>{$value | htmlentities}</textarea>
 
-<button 
+<button
     fx:template="input[$type == 'submit']"
     type="submit"
     class="fx_input fx_input_type_submit">
@@ -133,6 +133,10 @@
         value="{$key}" 
         {if $value == $key}selected="selected"{/if}>{$name}</option>
 </select>
+
+<div fx:template="row[$type == 'select' && count($values) == 1 && $hidden_on_one_value]">
+    <input type="hidden" {apply input_atts} value="{$values.key()}" />
+</div>
 
 <div class="fx_captcha_input" fx:template="input[$type == 'captcha']">
     <input {apply input_atts /} autocomplete="off" />

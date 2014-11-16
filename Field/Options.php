@@ -15,6 +15,11 @@ abstract class Options extends Field
             foreach ($value as $opt_key => $opt_val) {
                 if (is_scalar($opt_val)) {
                     $value[$opt_key] = array('name' => $opt_val);
+                } 
+                // value in format array( array(id, val), array(id, val)...)
+                elseif (is_array($opt_val) && count($opt_val) == 2) {
+                    unset($value[$opt_key]);
+                    $value[$opt_val[0]] = $opt_val[1];
                 }
             }
         }

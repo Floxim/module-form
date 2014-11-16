@@ -161,7 +161,7 @@ class Field implements \ArrayAccess, Template\Entity
             $real_offset = preg_replace("~^%~", '', $offset);
             $template = fx::env('current_template');
             if ($template && $template instanceof Template\Template) {
-                $template_value = $template->v($real_offset . "_" . $this['name']);
+                $template_value = $template->v($real_offset . "_" . $this->getId());
                 if ($template_value) {
                     return $template_value;
                 }
@@ -267,7 +267,8 @@ class Field implements \ArrayAccess, Template\Entity
         }
         if (preg_match("~^%~", $field_keyword)) {
             $field_keyword = preg_replace("~^%~", '', $field_keyword);
-            $v_id = $this['name'];
+            //$v_id = $this['name'];
+            $v_id = $this->getId();
             $field_meta = array(
                 'var_type' => 'visual',
                 'id'       => $field_keyword . '_' . $v_id,

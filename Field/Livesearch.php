@@ -7,7 +7,11 @@ use Floxim\Floxim\System\Fx as fx;
 class Livesearch extends Options
 {
     public function __construct($params = array()) {
+        fx::page()->addJsFile(FX_JQUERY_PATH);
+        fx::page()->addJsFile(FX_JQUERY_UI_PATH);
+        fx::page()->addJsFile('@floxim/lib/js/jquery.json-2.3.js');
         fx::page()->addJsFile('@floxim/Admin/js/livesearch.js');
+        fx::page()->addCssFile('@floxim/Admin/style/livesearch.less');
         return parent::__construct($params);
     }
     
@@ -31,7 +35,6 @@ class Livesearch extends Options
                 );
             }
         }
-        fx::log($this);
         return parent::setValue($value);
     }
 }
