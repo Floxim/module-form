@@ -22,7 +22,9 @@ $('html').on('submit', 'form.fx_form_ajax', function() {
     if (event_before.isDefaultPrevented()) {
         return false;
     }
-    $form.append('<input type="hidden" name="_ajax_base_url" value="'+document.location.href+'" />');
+    if ($('input[name="_ajax_base_url"]', $form).length === 0) {
+        $form.append('<input type="hidden" name="_ajax_base_url" value="'+document.location.href+'" />');
+    } 
     var form_data = $form.serialize();
     $.ajax({
         type:'post',

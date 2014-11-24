@@ -86,7 +86,7 @@
 
 {template id="input_atts"}
     {set $is_textlike = in_array($type, array('text', 'number', 'password'))}
-    class="fx_input fx_input_type_{$type}"
+    class="fx_input fx_input_type_{$type /}{if $input_class} {$input_class /}{/if}"
     id="{$id}"
     name="{$name}"
     {if $is_disabled}disabled="disabled"{/if}
@@ -102,7 +102,7 @@
 {/template}
 
 <input 
-    fx:template="input[in_array($type, array('text', 'password', 'hidden'))]"
+    fx:template="input[in_array($type, array('text', 'password', 'hidden'))]#default"
     type="{$type}"
     {apply input_atts /} />
 
@@ -119,7 +119,7 @@
 <button
     fx:template="input[$type == 'submit']"
     type="submit"
-    class="fx_input fx_input_type_submit">
+    class="fx_input fx_input_type_submit {$.input_class}">
     <span>{$%label}Submit{/$}</span>
 </button>
 

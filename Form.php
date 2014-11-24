@@ -13,7 +13,8 @@ class Form implements \ArrayAccess
     {
         $params = array_merge(array(
             'method' => 'POST',
-            'skin' => 'default'
+            'skin' => 'default',
+            'messages' => fx::collection()
         ), $params);
         $fields = new Fields();
         $fields->form = $this;
@@ -179,9 +180,6 @@ class Form implements \ArrayAccess
 
     public function addMessage($message, $after_finish = false)
     {
-        if (!isset($this['messages'])) {
-            $this['messages'] = fx::collection();
-        }
         $this['messages'][] = array('message' => $message, 'after_finish' => (bool)$after_finish);
     }
 

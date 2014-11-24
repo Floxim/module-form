@@ -27,7 +27,7 @@ class Livesearch extends Options
                     $value_ids []= $c_val[$value_prop];
                 }
                 $this['params'] = array_merge(
-                    $this['params'], 
+                    is_array($this['params']) ? $this['params'] : array(), 
                     array(
                         'ajax_preload' => true,
                         'plain_values' => $value_ids

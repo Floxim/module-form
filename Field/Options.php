@@ -19,7 +19,7 @@ abstract class Options extends Field
                 // value in format array( array(id, val), array(id, val)...)
                 elseif (is_array($opt_val) && count($opt_val) == 2) {
                     unset($value[$opt_key]);
-                    $value[$opt_val[0]] = $opt_val[1];
+                    $value[$opt_val[0]] = array('name' => $opt_val[1]);
                 }
             }
         }
