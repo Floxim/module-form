@@ -26,9 +26,7 @@
         {apply messages /}
         {apply errors /}
         {$fields.find('type', 'submit', '!=') || :row /}
-        <div class="fx_submit_row">
-            {$fields.find('type', 'submit') || :input_block /}
-        </div>
+        {apply submit_row with $buttons = $fields.find('type', 'submit')}
     {/$}
 </form>
 
@@ -38,12 +36,16 @@
     {apply messages with $messages->find('after_finish') as $messages /}
 </form>
 
+<div fx:template="submit_row" class="fx_submit_row">
+    {$buttons || :input_block /}
+</div>
+
 <div fx:template='messages' class='fx_form_messages' fx:with-each='$messages'>
     <div fx:item class="fx_form_message">{$message /}</div>
 </div>
 
 <div fx:template="row" class="{apply row_class}">
-    {apply label /}
+    {if !in_array($type, array('hidden', 'submit'))}{apply label /}{/if}
     {apply comment /}
     {apply errors /}
     {apply input_block /}
@@ -51,7 +53,7 @@
 
 {template id="row_class"}
     fx_form_row fx_form_row_type_{$type} fx_form_row_name_{$name} 
-    {if $_.errors} fx_form_row_error{/if}
+    {if $errors} fx_form_row_error{/if}
     {if $required} fx_form_row_required{/if}
 {/template}
 
@@ -67,7 +69,7 @@
     {$error}
 </div>
 
-<label fx:template="label" class="fx_label" for="{$id}" fx:if="!in_array($type, array('hidden', 'submit'))">
+<label fx:template="label" class="fx_label" for="{$id}">
     <span class="fx_label_title">{$%label}</span>
     <span fx:if="$required" class="required">*</span>
 </label>
@@ -77,11 +79,7 @@
 </div>
 
 <div fx:template="input_block" class="fx_input_block"> 
-    {if $render.input}
-        {apply $render.input}
-    {else}
-        {apply input /}
-    {/if}
+    {apply input /}
 </div>
 
 {template id="input_atts"}
@@ -102,7 +100,7 @@
 {/template}
 
 <input 
-    fx:template="input[in_array($type, array('text', 'password', 'hidden'))]#default"
+    fx:template="input[in_array($type, array('text', 'password', 'hidden', 'number'))]#default"
     type="{$type}"
     {apply input_atts /} />
 
@@ -119,7 +117,7 @@
 <button
     fx:template="input[$type == 'submit']"
     type="submit"
-    class="fx_input fx_input_type_submit {$.input_class}">
+    class="fx_input fx_input_type_submit {$input_class}">
     <span>{$%label}Submit{/$}</span>
 </button>
 
