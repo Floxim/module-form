@@ -172,7 +172,7 @@ class Form implements \ArrayAccess
 
     public function addField($params)
     {
-        if ($params['type'] == 'submit') {
+        if (isset($params['type']) && $params['type'] == 'submit') {
             $this->params['fields']->findRemove('name', 'default_submit');
         }
         return $this->params['fields']->addField($params);

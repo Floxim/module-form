@@ -95,7 +95,7 @@
         autocomplete="off"
     {/if}
     {if ($%placeholder || $_is_admin) && ($is_textlike || $type == 'textarea')}
-        placeholder="{$%placeholder | htmlspecialchars}" 
+        placeholder="{$%placeholder label='Placeholder' | htmlspecialchars}" 
     {/if}
 {/template}
 

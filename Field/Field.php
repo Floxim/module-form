@@ -66,7 +66,7 @@ class Field implements \ArrayAccess, Template\Entity
 
     public function getValue()
     {
-        return $this->params['value'];
+        return isset($this->params['value']) ? $this->params['value'] : null;
     }
 
     public function isEmpty()
