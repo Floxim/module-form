@@ -118,14 +118,14 @@ class Field implements \ArrayAccess, Template\Entity
     {
         $v = $this->getValue();
         if (!fx::util()->validateEmail($v)) {
-            return "Please enter valid e-mail adress!";
+            return fx::lang("Please enter valid e-mail adress!");
         }
     }
 
     public function validateFilled()
     {
         if ($this->isEmpty()) {
-            return 'This field is required';
+            return fx::lang('This field is required');
         }
     }
 
