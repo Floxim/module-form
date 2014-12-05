@@ -25,10 +25,14 @@
     {$_.content}
         {apply messages /}
         {apply errors /}
-        {$fields.find('type', 'submit', '!=') || :row /}
-        {apply submit_row with $buttons = $fields.find('type', 'submit')}
+        {apply form_body /}
     {/$}
 </form>
+
+{template id="form_body"}
+    {$fields.find('type', 'submit', '!=') || :row /}
+    {apply submit_row with $buttons = $fields.find('type', 'submit')}
+{/template}
 
 <form 
     fx:template="form[$is_finished]" 
