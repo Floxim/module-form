@@ -79,7 +79,7 @@
 </label>
     
 <div fx:template="comment" class="fx_field_comment" fx:if="$%comment">
-    <span class="fx_field_comment_text">{$%comment}</span>
+    <div class="fx_field_comment_text">{$%comment}</div>
 </div>
 
 <div fx:template="input_block" class="fx_input_block"> 
@@ -131,9 +131,11 @@
     {if $is_multiple}multiple="multiple"{/if}
     {apply input_atts /}>
     <option 
-        fx:each="$values as $key => $name" 
+        fx:each="$values as $key => $option" 
         value="{$key}" 
-        {if $value == $key}selected="selected"{/if}>{$name}</option>
+        {if $value == $key}selected="selected"{/if}
+        {if $option.keyword}data-option_keyword="{$option.keyword}"{/if}
+        >{$option.name}</option>
 </select>
 
 <div fx:template="row[$type == 'select' && count($values) == 1 && $hidden_on_one_value]">
@@ -155,7 +157,14 @@
 <div fx:template="input[$type == 'radio']">
     {set $field_name = $name}
     <label fx:each="$values as $key => $option" title="{$option.comment | strip_tags}" class="fx_form_option_label">
-        <input type="radio" name="{$field_name}" value="{$key}" {if $value == $key}checked="checked"{/if} />
+        {set $real_key = $option.id ? $option.id : $key}
+        <input 
+            type="radio" 
+            name="{$field_name}" 
+            value="{$real_key}" 
+            {if $value == $real_key}checked="checked"{/if} 
+            {if $option.keyword}data-option_keyword="{$option.keyword}"{/if}
+            />
         <span>{$option.name}</span>
     </label>
 </div>

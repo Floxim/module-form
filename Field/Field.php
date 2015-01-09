@@ -262,12 +262,12 @@ class Field implements \ArrayAccess, Template\Entity
     {
         $entity = $this['_entity'];
         if ($entity) {
+            $field_keyword = preg_replace("~^%~", '', $field_keyword);
             $meta = $entity->getFieldMeta($field_keyword);
             return $meta;
         }
         if (preg_match("~^%~", $field_keyword)) {
             $field_keyword = preg_replace("~^%~", '', $field_keyword);
-            //$v_id = $this['name'];
             $v_id = $this->getId();
             $field_meta = array(
                 'var_type' => 'visual',
