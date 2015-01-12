@@ -155,19 +155,26 @@
 </div>
 
 <div fx:template="input[$type == 'radio']">
-    {set $field_name = $name}
-    <label fx:each="$values as $key => $option" title="{$option.comment | strip_tags}" class="fx_form_option_label">
-        {set $real_key = $option.id ? $option.id : $key}
-        <input 
-            type="radio" 
-            name="{$field_name}" 
-            value="{$real_key}" 
-            {if $value == $real_key}checked="checked"{/if} 
-            {if $option.keyword}data-option_keyword="{$option.keyword}"{/if}
-            />
-        <span>{$option.name}</span>
-    </label>
+    {set $field = $}
+    {each $values as $key => $option}
+        {apply radio_option /}
+    {/each}
 </div>
+    
+<label fx:template="radio_option" title="{$.comment | strip_tags}" class="fx_form_option_label {$option_class}">
+    {apply radio_input /}
+    <span>{$.name}</span>
+</label>
+
+<input
+    fx:template="radio_input"
+    {set $real_key = $.id ? $.id : $key}
+    type="radio" 
+    name="{$field.name}" 
+    value="{$real_key}" 
+    {if $value == $real_key}checked="checked"{/if} 
+    {if $.keyword}data-option_keyword="{$.keyword}"{/if}
+    />
     
 <div fx:template="input[$type == 'checkbox_set']">
     {set $field_name = $name}
