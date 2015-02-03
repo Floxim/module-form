@@ -69,7 +69,7 @@
     <h2>{$%label}</h2>
 </div>
 
-<div fx:template="errors" fx:each="$_.errors as $error" class="fx_form_error">
+<div fx:template="errors" fx:each="$errors as $error" class="fx_form_error">
     {$error}
 </div>
 

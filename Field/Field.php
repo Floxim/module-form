@@ -48,6 +48,7 @@ class Field implements \ArrayAccess, Template\Entity
 
     public function __construct($params = array())
     {
+        $this->params['errors'] = fx::collection();
         if (isset($params['owner'])) {
             $this->owner = $params['owner'];
             unset($params['owner']);
@@ -75,14 +76,9 @@ class Field implements \ArrayAccess, Template\Entity
         return !$this->getValue();
     }
 
-    protected $errors = null;
-
     public function addError($message)
     {
-        if (!isset($this->params['errors'])) {
-            $this->params['errors'] = fx::collection();
-            $this->params['has_errors'] = true;
-        }
+        $this->params['has_errors'] = true;
         $this->params['errors'][] = $message;
     }
 
