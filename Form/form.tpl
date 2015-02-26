@@ -57,7 +57,7 @@
 
 {template id="row_class"}
     fx_form_row fx_form_row_type_{$type} fx_form_row_name_{$name} 
-    {if $errors} fx_form_row_error{/if}
+    {if count($errors)} fx_form_row_error{/if}
     {if $required} fx_form_row_required{/if}
 {/template}
 
@@ -88,7 +88,7 @@
 
 {template id="input_atts"}
     {set $is_textlike = in_array($type, array('text', 'number', 'password'))}
-    class="fx_input fx_input_type_{$type /}{if $input_class} {$input_class /}{/if}"
+    class="fx_input fx_input_type_{$type /} fx_input_name_{$name}{if $input_class} {$input_class /}{/if}"
     id="{$id}"
     name="{$name}"
     {if $is_disabled}disabled="disabled"{/if}
@@ -145,7 +145,7 @@
 <div class="fx_captcha_input" fx:template="input[$type == 'captcha']">
     <input {apply input_atts /} autocomplete="off" />
     <div class="fx_captcha_image_block">
-        <img src="{$captcha_url}" class="fx_captcha_image" />
+        <img src="{$captcha_url type="text"}" class="fx_captcha_image" />
         <a class="fx_refresh_captcha">{%refresh_captcha}Show another image{/%}</a>
     </div>
 </div>

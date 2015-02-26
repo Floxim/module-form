@@ -21,7 +21,7 @@ class Captcha extends Field
 
         parent::__construct($params);
         // todo: psr0 need fix path
-        $url = fx::path()->http(dirname(realpath(__FILE__)));
+        $url = fx::path()->http(realpath(dirname(realpath(__FILE__)).'/../Form'));
         $url .= '/captcha.php?fx_field_name=' . urlencode($this->getId());
         $url .= '&rand=' . rand(0, 1000000);
         $this['captcha_url'] = $url;
