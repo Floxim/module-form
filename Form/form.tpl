@@ -233,3 +233,5 @@
     <div class="livesearch_results">
     </div>
 </div>
+        
+<input fx:template="input[$type == 'datetime']" value="{$value}" {apply input_atts /} />

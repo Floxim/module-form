@@ -19,7 +19,8 @@ class Field implements \ArrayAccess, Template\Entity
             'bool' => 'checkbox',
             'string' => 'text',
             'int' => 'text',
-            'float' => 'text'
+            'float' => 'text',
+            'date' => 'datetime'
         );
         if (isset($type_map[$params['type']])) {
             $params['type'] = $type_map[$params['type']];
