@@ -204,7 +204,7 @@
     fx:template="input[$type == 'livesearch']"
     {set $f_postfix = $name_postfix ? '[' . $name_postfix . ']' : ''}
     {set $input_name = $name}
-    class="livesearch" 
+    class="livesearch {if $is_multiple}livesearch_multiple{/if}" 
     data-params='{$params | json_encode }'
     data-prototype_name="{$name}[prototype]{$f_postfix}"
     data-is_multiple="{if $is_multiple}Y{else}N{/if}">
@@ -225,7 +225,7 @@
                 {/if}
                 />
         {/if}
-    <ul class="livesearch_items">
+    <ul class="livesearch_items {$input_class /}">
         <li class="livesearch_input">
             <input type="text" class="livesearch_input" {*name="livesearch_input"*} autocomplete="off" style="width:3px;" />
         </li>
