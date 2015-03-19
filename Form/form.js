@@ -15,7 +15,13 @@ $('html').on('change', '.fx_file_switcher', function() {
     $('.fx_file_input_'+c_value, $block).show();
 });
 
-$('html').on('submit', 'form.fx_form_ajax', function() {
+$('html').on('click', '.fx_form :input[type="submit"]', function() {
+    var $b = $(this),
+        $form = $b.closest('form');
+    $form.data('fx_pressed_button_name', $b.attr('name'));
+});
+
+$('html').on('submit', 'form.fx_form_ajax', function(e) {
     var $form = $(this);
     var event_before = $.Event('fx_before_ajax_form_sent');
     $form.trigger(event_before);
@@ -25,7 +31,15 @@ $('html').on('submit', 'form.fx_form_ajax', function() {
     if ($('input[name="_ajax_base_url"]', $form).length === 0) {
         $form.append('<input type="hidden" name="_ajax_base_url" value="'+document.location.href+'" />');
     } 
+    var button_name = $form.data('fx_pressed_button_name');
+    if (button_name) {
+        var $button_placeholder = $('<input type="hidden" name="'+button_name+'" value="1" />');
+        $form.append($button_placeholder);
+    }
     var form_data = $form.serialize();
+    if (button_name) {
+        $button_placeholder.remove();
+    }
     $.ajax({
         type:'post',
         url:$form.attr('action'),

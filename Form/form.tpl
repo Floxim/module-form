@@ -121,6 +121,7 @@
 <button
     fx:template="input[$type == 'submit']"
     type="submit"
+    {if $name}name="{$name}"{/if}
     class="fx_input fx_input_type_submit {$input_class}">
     <span>{$%label}Submit{/$}</span>
 </button>
