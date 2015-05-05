@@ -9,6 +9,10 @@ class Field implements \ArrayAccess, Template\Entity
 {
 
     protected $params = array();
+    
+    public function getAvailableOffsetKeys() {
+        return array_flip(array_keys($this->params));
+    }
 
     public static function create($params)
     {

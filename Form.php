@@ -2,12 +2,25 @@
 
 namespace Floxim\Form;
 
+use Floxim\Floxim\Template;
 use Floxim\Floxim\System\Fx as fx;
 
-class Form implements \ArrayAccess
+class Form implements \ArrayAccess, Template\Entity
 {
 
     protected $params = array();
+    
+    public function getAvailableOffsetKeys() {
+        return array_flip(array_keys($this->params));
+    }
+    
+    public function addTemplateRecordMeta($html, $collection, $index, $is_subroot) {
+        return $html;
+    }
+    
+    public function getFieldMeta($field_keyword) {
+        return array();
+    }
 
     public function __construct($params = array())
     {
