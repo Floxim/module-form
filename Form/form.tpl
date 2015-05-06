@@ -22,7 +22,7 @@
         {/css}
     {/if}
     <input type="hidden" name="{$.getId()}_sent" value="1" />
-    {$_.content}
+    {$.content}
         {apply messages /}
         {apply errors /}
         {apply form_body /}
