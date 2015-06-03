@@ -50,9 +50,11 @@ $('html').on('submit', 'form.fx_form_ajax', function(e) {
             var $ib = $form.closest('.fx_infoblock');
             var $container = $ib.parent();
             $ib.before($data);
+            var event_reload = $.Event('fx_form_reloaded', {reloaded:$data});
+            $form.trigger(event_reload);
             $ib.remove();
             $('form.fx_form_sent .fx_form_row_error :input', $container).first().focus();
-            $data.trigger('fx_form_loaded');
+            $data.trigger('fx_form_loaded').trigger('fx_infoblock_loaded');
         }
     });
     return false;

@@ -166,6 +166,7 @@ class Form implements \ArrayAccess, Template\Entity
 
     public function getValue($field = null)
     {
+        $this->isSent();
         return $this->params['fields']->getValue($field);
     }
 
