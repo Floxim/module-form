@@ -10,7 +10,7 @@
     action="{$action}" 
     method="{$method}" 
     id="{$.getId()}"
-    class="fx_form {$class} {if $is_sent} fx_form_sent{/if}{if $.ajax} fx_form_ajax{/if}"
+    class="fx_form fx_form-skin-{$.skin} {$class} {if $is_sent} fx_form_sent{/if}{if $.ajax} fx_form_ajax{/if}"
     enctype="multipart/form-data">
     {js}
         FX_JQUERY_PATH as jquery
