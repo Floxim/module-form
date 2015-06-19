@@ -117,6 +117,21 @@
 <textarea
     fx:template="input[$type == 'textarea']"
     {apply input_atts /}>{$value | htmlentities}</textarea>
+    
+
+{template id="input" test="$type == 'wysiwyg'"}
+    {js}
+        FX_JQUERY_PATH_HTTP
+        /vendor/floxim/floxim/lib/editors/redactor/redactor.min.js
+    {/js}
+    {css}
+        /vendor/floxim/floxim/lib/editors/redactor/redactor.css
+    {/css}
+    <textarea {apply input_atts /}>{$value | htmlentities}</textarea>
+{/template}
+
+    
+    
 
 <button
     fx:template="input[$type == 'submit']"
@@ -234,5 +249,33 @@
     <div class="livesearch_results">
     </div>
 </div>
-        
+
+{*
 <input fx:template="input[$type == 'datetime']" value="{$value}" {apply input_atts /} />
+*}
+
+<div fx:b="fx-date-field" fx:template="input[$type == 'datetime']">
+    {css}datetime.less{/css}
+    {js}
+        @floxim_js/jquery-ui-1.10.3.custom.min.js
+        @floxim_js/jquery-ui.timepicker.js
+        @floxim_js/jquery.bem.js
+    {/js}
+    <input 
+        type="text" 
+        {apply  input_atts /}/>
+    
+    <span fx:e="parts" fx:with-each="$.getParts() as $part">
+        <input 
+            fx:item="$part.name" 
+            fx:e="part type_{$part.name}" 
+            value="{$part.value}"
+            data-len="{$part.len}2{/$}"
+            data-max="{$part.max}"
+            data-min="{$part.min}1{/$}" />
+        <span 
+            fx:item 
+            fx:e="separator">{$part.string}</span>
+    </span>
+    <div fx:e="datepicker-icon"></div>
+</div>

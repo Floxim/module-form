@@ -24,11 +24,17 @@ class Field implements \ArrayAccess, Template\Entity
             'string' => 'text',
             'int' => 'text',
             'float' => 'text',
-            'date' => 'datetime'
+            'date' => 'datetime',
         );
+        
+        if (isset($params['wysiwyg'])) {
+            $params['type'] = $params['wysiwyg'] ? 'wysiwyg' : 'textarea';
+        }
+        
         if (isset($type_map[$params['type']])) {
             $params['type'] = $type_map[$params['type']];
         }
+        
         $classname = 'Floxim\\Form\\Field\\' . ucfirst($params['type']);
         try {
             if (!class_exists($classname)) {

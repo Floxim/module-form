@@ -65,11 +65,175 @@ $(function() {
         var $node = $(this);
         var ls = new fx_livesearch($node);
         $node.data('livesearch', ls);
-        //console.log('c ls', ls);
         if (ls.ajax_preload) {
             ls.loadValues(ls.plain_values);
         }
     });
 });
+
+var handle_date_field = function($block) {
+    $block.ctx('fx-date-field');
+    
+    var $inp  = $block.find('.fx_input');
+    
+    function export_parts() {
+        var res = '',
+        filled = true;
+        $.each(
+            'y,m,d,h,i'.split(','), 
+            function(index, item) {
+                var c_val = $block.elem('part').byMod('type', item).val();
+                if (!c_val) {
+                    if (item === 'h' || item === 'i') {
+                        c_val = '00';
+                    } else {
+                        filled = false;
+                    }
+                }
+                res += c_val;
+                res += (index < 2 ? '-' : index === 2 ? ' ' : ':');
+            }
+        );
+        res += '00';
+        if (filled) {
+            var date = new Date(res);
+            if (date && !isNaN(date.getTime())) {
+                $inp.val( format_date ( date ) );
+            }
+        }
+    };
+    
+    function format_date(d) {
+        var res = $.datepicker.formatDate("yy-mm-dd", d );
+        res += ' ';
+        var h = d.getHours();
+        res += (h < 10 ? '0' : '')+h + ':';
+        var m = d.getMinutes();
+        res += (m < 10 ? '0' : '')+m+':00';
+        return res;
+    }
+    
+    $block.elem('part').on('keydown',  function(e) {
+        var $part = $(this),
+            part_val = $part.val(),
+            max = $part.data('max'),
+            min = $part.data('min') || 0,
+            len = $part.data('len'),
+            strikes = ( $part.data('strikes') || 0) + 1;
+        
+        $part.data('strikes', strikes);
+    
+        if (e.which === 40 || e.which === 38) { // down or up
+            part_val = part_val*1;
+            part_val += (e.which === 40 ? -1 : 1);
+            if (part_val < min) {
+                part_val = max;
+            } else if (part_val > max) {
+                part_val = min;
+            }
+            
+            if (len === 2 && part_val < 10) {
+                part_val = '0'+part_val;
+            }
+            
+            $part.val(part_val);
+            return false;
+        }
+    })
+    .on('focus mouseup click',  function(e) {
+        this.setSelectionRange(0, this.value.length);
+        $(this).data('strikes', 0);
+        return false;
+    })
+    .on('keyup', function(e) {
+        var $part = $(this),
+            part_val = $part.val(),
+            min = $part.data('min'),
+            max = $part.data('max'),
+            len = $part.data('len');
+        
+        if (part_val.length > len) {
+            part_val = part_val.slice(0, len);
+        }
+        
+        if (part_val.match(/[^0-9]/)) {
+            part_val = part_val.replace(/[^0-9]+/g, '');
+        }
+        
+        var int_val = part_val*1;
+        
+        if (int_val > max) {
+            part_val = max;
+        }
+        if (part_val + '' !== $part.val()) {
+            $part.val(part_val);
+        }
+        
+        export_parts();
+        
+        if (this.selectionStart !== undefined && this.selectionStart === this.selectionEnd) {
+            if (this.selectionStart === 0 && e.which === 37) {
+                var $prev = $part.prevAll('.fx-date-field__part').first();
+                if ($prev.length) {
+                    $prev.focus().focus();
+                }
+            } else if (this.selectionEnd === part_val.length && e.which === 39) {
+                var $next = $part.nextAll('.fx-date-field__part').first();
+                if ($next.length) {
+                    $next.focus().focus();
+                }
+            }
+        }
+        
+        if (e.which < 48 || e.which > 57 || !$part.data('strikes')) { 
+            return;
+        }
+        
+        if (part_val.length === $part.data('len')) {
+            var int_val = part_val*1;
+            if (int_val >= min && int_val <= max) {
+                var $next = $part.nextAll('.fx-date-field__part').first();
+                if ($next.length) {
+                    $next[0].setSelectionRange(0, $next.val().length);
+                    $next.focus().focus();
+                }
+            }
+        }
+    });
+
+var show_format = 'yy-mm-dd';
+
+$inp.datepicker({
+    changeMonth: true,
+    changeYear: true,
+    firstDay:1,
+    dateFormat: show_format,
+    onSelect:function(dateText, datepicker) {
+        var d = new Date(dateText);
+        $('.fx_date_part_d', html).val( $.datepicker.formatDate("dd", d) );
+        $('.fx_date_part_m', html).val( $.datepicker.formatDate("mm", d) );
+        $('.fx_date_part_y', html).val( $.datepicker.formatDate("yy", d) );
+        export_parts();
+    }
+});
+
+//$inp.datepicker('widget').addClass('fx_overlay');
+
+$block.elem('datepicker_icon').click(function() {
+    $inp.datepicker('show');
+});
+
+};
+
+$(function() {
+    $('.fx_form .fx_input_type_wysiwyg').redactor({
+            
+    });
+    
+    $('.fx_form .fx-date-field').each(function() {
+        handle_date_field($(this));
+    });
+});
+
 
 })(window.jQuery);
