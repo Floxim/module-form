@@ -6,8 +6,10 @@ use Floxim\Floxim\System\Fx as fx;
 
 class Datetime extends Field {
     public function getParts() {
-        //$date_order = fx::lang('date_order');
-        $date_order = 'd.m.y, h:i';
+        $date_order = 'd.m.y';
+        if ($this['with_time']) {
+            $date_order []= ', h:i';
+        }
         $date_order = str_split($date_order);
         $parts = array(
             'd' => array(
@@ -59,5 +61,14 @@ class Datetime extends Field {
         }
             
         return $res;
+    }
+    
+    public function getStartValue()
+    {
+        
+    }
+    
+    public function getEndValue() {
+        
     }
 }

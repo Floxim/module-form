@@ -7,15 +7,12 @@
 <form 
     fx:template="form" 
     fx:if="$ instanceof \Floxim\Form\Form"
+    {set $validate_before_render = $.validate()}
     action="{$action}" 
     method="{$method}" 
     id="{$.getId()}"
     class="fx_form fx_form-skin-{$.skin} {$class} {if $is_sent} fx_form_sent{/if}{if $.ajax} fx_form_ajax{/if}"
     enctype="multipart/form-data">
-    {js}
-        FX_JQUERY_PATH as jquery
-        form.js
-    {/js}
     {if $.skin == 'default'}
         {css}
             form_default.less
@@ -27,6 +24,10 @@
         {apply errors /}
         {apply form_body /}
     {/$}
+    {js}
+        FX_JQUERY_PATH as jquery
+        form.js
+    {/js}
 </form>
 
 {template id="form_body"}
@@ -87,7 +88,7 @@
 </div>
 
 {template id="input_atts"}
-    {set $is_textlike = in_array($type, array('text', 'number', 'password'))}
+    {set $is_textlike = in_array($type, array('text', 'number', 'password', 'datetime'))}
     class="fx_input fx_input_type_{$type /} fx_input_name_{$name}{if $input_class} {$input_class /}{/if}"
     id="{$id}"
     name="{$name}"
@@ -257,13 +258,12 @@
 <div fx:b="fx-date-field" fx:template="input[$type == 'datetime']">
     {css}datetime.less{/css}
     {js}
+        FX_JQUERY_PATH_HTTP
         @floxim_js/jquery-ui-1.10.3.custom.min.js
         @floxim_js/jquery-ui.timepicker.js
         @floxim_js/jquery.bem.js
     {/js}
-    <input 
-        type="text" 
-        {apply  input_atts /}/>
+    <input {apply  input_atts /}/>
     
     <span fx:e="parts" fx:with-each="$.getParts() as $part">
         <input 

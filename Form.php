@@ -49,8 +49,13 @@ class Form implements \ArrayAccess, Template\Entity
     /**
      * Returns input with merged $_FILES array
      */
+    protected $input = null;
+    
     public function getInput()
     {
+        if (!is_null($this->input)) {
+            return $this->input;
+        }
         $input = strtolower($this['method']) == 'post' ? $_POST : $_GET;
         $merge_branch_copy = function($branch, $key, &$target, $last_key) use (&$merge_branch_copy) {
             if (!isset($target[$key])) {
@@ -79,6 +84,7 @@ class Form implements \ArrayAccess, Template\Entity
                 }
             }
         }
+        $this->input = $input;
         return $input;
     }
 
@@ -130,7 +136,7 @@ class Form implements \ArrayAccess, Template\Entity
             $this->is_sent = isset($input[$this->getId() . '_sent']);
             if ($this->is_sent) {
                 $this->loadValues($input);
-                $this->validate();
+                //$this->validate();
                 $this->trigger('sent');
             }
         }
@@ -139,6 +145,9 @@ class Form implements \ArrayAccess, Template\Entity
 
     public function validate()
     {
+        if (!$this->isSent()) {
+            return true;
+        }
         return $this->params['fields']->validate();
     }
 
@@ -148,14 +157,7 @@ class Form implements \ArrayAccess, Template\Entity
             $source = $this->getInput();
         }
         foreach ($this->params['fields'] as $name => $field) {
-            if (preg_match("~\[~", $name)) {
-                $name_path = preg_replace("~(?<=[^\]])\[|\]\[~", '.', $name);
-                $name_path = trim($name_path, ']');
-                $c_value = fx::dig($source, $name_path);
-            } else {
-                $c_value = isset($source[$name]) ? $source[$name] : null;
-            }
-            $field->setValue($c_value);
+            $field->loadValue($source);
         }
     }
 
@@ -189,7 +191,19 @@ class Form implements \ArrayAccess, Template\Entity
         if (isset($params['type']) && $params['type'] == 'submit') {
             $this->params['fields']->findRemove('name', 'default_submit');
         }
-        return $this->params['fields']->addField($params);
+        $field = $this->params['fields']->addField($params);
+        if ($this->isSent()) {
+            $field->loadValue($this->getInput());
+        }
+    }
+    
+    public function storeValue($name, $value) {
+        $this->addField(array(
+            'type' => 'hidden',
+            'name' => $name,
+            'value' => $value
+        ));
+        return $this->getValue($name);
     }
 
     public function addMessage($message, $after_finish = false)
@@ -208,6 +222,7 @@ class Form implements \ArrayAccess, Template\Entity
 
     public function hasErrors()
     {
+        $this->validate();
         return count($this->getErrors()) > 0;
     }
 

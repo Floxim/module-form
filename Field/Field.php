@@ -60,6 +60,7 @@ class Field implements \ArrayAccess, Template\Entity
     public function __construct($params = array())
     {
         $this->params['errors'] = fx::collection();
+        $this->params['is_loaded'] = false;
         if (isset($params['owner'])) {
             $this->owner = $params['owner'];
             unset($params['owner']);
@@ -70,6 +71,20 @@ class Field implements \ArrayAccess, Template\Entity
         if (!isset($this['value'])) {
             $this->setValue(null);
         }
+    }
+    
+    public function loadValue($source) 
+    {
+        $name = $this['name'];
+        if (preg_match("~\[~", $name)) {
+            $name_path = preg_replace("~(?<=[^\]])\[|\]\[~", '.', $name);
+            $name_path = trim($name_path, ']');
+            $c_value = fx::dig($source, $name_path);
+        } else {
+            $c_value = isset($source[$name]) ? $source[$name] : null;
+        }
+        $this->setValue($c_value);
+        $this['is_loaded'] = true;
     }
 
     public function setValue($value)

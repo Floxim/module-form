@@ -225,14 +225,22 @@ $block.elem('datepicker_icon').click(function() {
 
 };
 
-$(function() {
-    $('.fx_form .fx_input_type_wysiwyg').redactor({
-            
+function init_controls($node) {
+    $('.fx_form .fx_input_type_wysiwyg', $node).each(function() {
+        $(this).redactor({});
     });
-    
-    $('.fx_form .fx-date-field').each(function() {
+
+    $('.fx_form .fx-date-field', $node).each(function() {
         handle_date_field($(this));
     });
+}
+
+$(function() {
+    init_controls($('body'));
+});
+
+$('html').on('fx_infoblock_loaded', function(e) {
+    init_controls($(e.target));
 });
 
 
