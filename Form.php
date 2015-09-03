@@ -195,6 +195,7 @@ class Form implements \ArrayAccess, Template\Entity
         if ($this->isSent()) {
             $field->loadValue($this->getInput());
         }
+        return $field;
     }
     
     public function storeValue($name, $value) {
