@@ -216,24 +216,24 @@
     </div>
 </div>
         
-
-<div
+<div 
     fx:template="input[$type == 'livesearch']"
+    class="livesearch" 
     {set $f_postfix = $name_postfix ? '[' . $name_postfix . ']' : ''}
     {set $input_name = $name}
-    class="livesearch {if $is_multiple}livesearch_multiple{/if}" 
-    data-params='{$params | json_encode }'
+    fx:b="{if $is_multiple}multisearch{else}monosearch{/if}"
+    data-params='{$params | json_encode}' 
     data-prototype_name="{$name}[prototype]{$f_postfix}"
     data-is_multiple="{if $is_multiple}Y{else}N{/if}">
-        {if $is_multiple && $value && !$ajax_preload}
-            <input  
+    {if $is_multiple && $value && !$ajax_preload}
+        <input  
                 fx:each="$value as $vi => $vv" 
                 class="preset_value" type="hidden" 
                 name="{$input_name}[{$vv.value_id}]{$f_postfix}"
                 value="{$vv.id}"
                 data-name="{$vv.name}" />
-        {elseif !$is_multiple}
-            <input 
+    {elseif !$is_multiple}
+        <input 
                 class="preset_value" 
                 type="hidden" name="{$input_name}"
                 {if $value}
@@ -241,13 +241,14 @@
                     data-name="{$value.name}"
                 {/if}
                 />
-        {/if}
-    <ul class="livesearch_items {$input_class /}">
-        <li class="livesearch_input">
-            <input type="text" class="livesearch_input" {*name="livesearch_input"*} autocomplete="off" style="width:3px;" />
-        </li>
-    </ul>
-    <div class="livesearch_results">
+    {/if}
+    <div class="livesearch__container" fx:e="container">
+        <input type="text" class="livesearch__input" fx:e="input" />
+        <div class="livesearch__control livesearch__control_arrow">
+            
+        </div>
+    </div>
+    <div class="livesearch__results">
     </div>
 </div>
 
@@ -271,6 +272,7 @@
             fx:e="part type_{$part.name}" 
             value="{$part.value}"
             data-len="{$part.len}2{/$}"
+            size="{$part.len}2{/$}"
             data-max="{$part.max}"
             data-min="{$part.min}1{/$}" />
         <span 

@@ -54,7 +54,7 @@ $('html').on('submit', 'form.fx_form_ajax', function(e) {
             $form.trigger(event_reload);
             $ib.remove();
             $('form.fx_form_sent .fx_form_row_error :input', $container).first().focus();
-            $data.trigger('fx_form_loaded').trigger('fx_infoblock_loaded');
+            $data.trigger('fx_infoblock_loaded');
         }
     });
     return false;
@@ -240,7 +240,12 @@ $(function() {
 });
 
 $('html').on('fx_infoblock_loaded', function(e) {
-    init_controls($(e.target));
+    var $form = $('.fx_form', e.target);
+    $form.trigger('fx_form_loaded');
+});
+
+$('html').on('fx_form_loaded', function(e) {
+    init_controls($(e.target.parentNode));
 });
 
 
