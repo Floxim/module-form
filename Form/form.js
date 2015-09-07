@@ -78,9 +78,13 @@ var handle_date_field = function($block) {
     
     function export_parts() {
         var res = '',
-        filled = true;
+            months = {
+                '01':'Jan', '02':'Feb', '03':'Mar', '04':'Apr', '05':'May', '06':'Jun',
+                '07':'Jul', '08':'Aug', '09':'Sep', '10':'Oct', '11':'Nov', '12':'Dec'
+            },
+            filled = true;
         $.each(
-            'y,m,d,h,i'.split(','), 
+            'd,m,y,h,i'.split(','), 
             function(index, item) {
                 var c_val = $block.elem('part').byMod('type', item).val();
                 if (!c_val) {
@@ -90,8 +94,11 @@ var handle_date_field = function($block) {
                         filled = false;
                     }
                 }
+                if (item === 'm') {
+                    c_val = months[c_val];
+                }
                 res += c_val;
-                res += (index < 2 ? '-' : index === 2 ? ' ' : ':');
+                res += (index < 2 ? ' ' : index === 2 ? ' ' : ':');
             }
         );
         res += '00';
