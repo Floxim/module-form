@@ -60,17 +60,6 @@ $('html').on('submit', 'form.fx_form_ajax', function(e) {
     return false;
 });
 
-$(function() {
-    $('.fx_input_block .livesearch').each(function() {
-        var $node = $(this);
-        var ls = new fx_livesearch($node);
-        $node.data('livesearch', ls);
-        if (ls.ajax_preload) {
-            ls.loadValues(ls.plain_values);
-        }
-    });
-});
-
 var handle_date_field = function($block) {
     $block.ctx('fx-date-field');
     
@@ -239,6 +228,15 @@ function init_controls($node) {
 
     $('.fx_form .fx-date-field', $node).each(function() {
         handle_date_field($(this));
+    });
+    
+    $('.livesearch', $node).each(function() {
+        var $node = $(this);
+        var ls = new fx_livesearch($node);
+        $node.data('livesearch', ls);
+        if (ls.ajax_preload) {
+            ls.loadValues(ls.plain_values);
+        }
     });
 }
 

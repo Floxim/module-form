@@ -66,7 +66,12 @@ class Field implements \ArrayAccess, Template\Entity
             unset($params['owner']);
         }
         foreach ($params as $k => $v) {
-            $this[$k] = $v;
+            if ($k !== 'value') {
+                $this[$k] = $v;
+            }
+        }
+        if (isset($params['value'])) {
+            $this->setValue($params['value']);
         }
         if (!isset($this['value'])) {
             $this->setValue(null);
