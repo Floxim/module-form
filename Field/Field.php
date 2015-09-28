@@ -112,9 +112,18 @@ class Field implements \ArrayAccess, Template\Entity
         $this->params['has_errors'] = true;
         $this->params['errors'][] = $message;
     }
+    
+    
+    protected $validated_values = array();
 
     public function validate()
     {
+        $c_value = $this->getValue();
+        foreach ($this->validated_values as $vv) {
+            if ($c_value === $vv['value']) {
+                return $vv['result'];
+            }
+        }
         $is_valid = true;
         if ($this['validators']) {
             foreach ($this['validators'] as $validator) {
@@ -135,10 +144,15 @@ class Field implements \ArrayAccess, Template\Entity
                         break;
                 }
                 if ($validator['is_last'] && !$is_valid) {
-                    return $is_valid;
+                    //return $is_valid;
+                    break;
                 }
             }
         }
+        $this->validated_values[]= array(
+            'value' => $c_value,
+            'result' => $is_valid
+        );
         return $is_valid;
     }
 

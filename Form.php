@@ -229,7 +229,7 @@ class Form implements \ArrayAccess, Template\Entity
 
     public function getErrors()
     {
-        $errors = isset($this['errors']) ? $this['errors'] : fx::collection();
+        $errors = isset($this['errors']) ? $this['errors']->copy() : fx::collection();
         $errors->concat($this->params['fields']->getErrors());
         return $errors;
     }
