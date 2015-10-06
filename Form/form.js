@@ -46,6 +46,7 @@ $('html').on('submit', 'form.fx_form_ajax', function(e) {
         dataType:'html',
         data:form_data,
         success: function(data) {
+            data = $.trim(data);
             var $data = $(data);
             var $ib = $form.closest('.fx_infoblock');
             var $container = $ib.parent();
