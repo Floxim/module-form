@@ -206,17 +206,25 @@ class Form implements \ArrayAccess, Template\Entity
         ));
         return $this->getValue($name);
     }
+    
+    public function setHeader($header)
+    {
+        $this['header'] = $header;
+    }
 
     public function addMessage($message, $after_finish = false)
     {
         $this['messages'][] = array('message' => $message, 'after_finish' => (bool)$after_finish);
     }
 
-    public function finish($message = null)
+    public function finish($message = null, $header = null)
     {
         $this['is_finished'] = true;
         if ($message) {
             $this->addMessage($message, true);
+        }
+        if (!is_null($header)) {
+            $this->setHeader($header);
         }
         $this->trigger('finish');
     }

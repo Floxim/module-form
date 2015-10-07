@@ -20,6 +20,7 @@
     {/if}
     <input type="hidden" name="{$.getId()}_sent" value="1" />
     {$.content}
+        {apply header /}
         {apply messages /}
         {apply errors /}
         {apply form_body /}
@@ -38,6 +39,7 @@
 <form 
     fx:template="form[$is_finished]" 
     class="fx_form fx_form_sent fx_form_finished {$class}">
+    {apply header /}
     {apply messages with $messages->find('after_finish') as $messages /}
 </form>
 
@@ -48,6 +50,8 @@
 <div fx:template='messages' class='fx_form_messages' fx:with-each='$messages'>
     <div fx:item class="fx_form_message">{$message /}</div>
 </div>
+
+<h2 fx:template="header" fx:if="$.header" class="fx_form_header">{$header /}</h2>
 
 <div fx:template="row" class="{apply row_class}">
     {if !in_array($type, array('hidden', 'submit'))}{apply label /}{/if}
