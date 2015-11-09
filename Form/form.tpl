@@ -39,8 +39,10 @@
 <form 
     fx:template="form[$is_finished]" 
     class="fx_form fx_form_sent fx_form_finished {$class}">
-    {apply header /}
-    {apply messages with $messages->find('after_finish') as $messages /}
+    {$.content}
+        {apply header /}
+        {apply messages with $messages->find('after_finish') as $messages /}
+    {/$}
 </form>
 
 <div fx:template="submit_row" class="fx_submit_row">
@@ -106,6 +108,7 @@
     {if ($%placeholder || $_is_admin) && ($is_textlike || $type == 'textarea')}
         placeholder="{$%placeholder label='Placeholder' | htmlspecialchars}" 
     {/if}
+    {$extra_input_atts /}
 {/template}
 
 <input 
@@ -143,7 +146,7 @@
     type="submit"
     {if $name}name="{$name}"{/if}
     class="fx_input fx_input_type_submit {$input_class}">
-    <span>{$%label}Submit{/$}</span>
+    <span>{$%label label="submit button text"}Submit{/$}</span>
 </button>
 
 <select 
@@ -205,7 +208,7 @@
     </label>
 </div>
     
-<div fx:template="input[$type == 'file' || $type == 'image']">
+<div fx:template="input[$type == 'file' || $type == 'image']" class="fx_file_input_block">
     {set $field_name = $name}
     <div fx:if="count($inputs) > 1" class="fx_file_switcher">
         <label fx:each="$inputs">
@@ -213,10 +216,23 @@
             <span>{$label}</span>
         </label>
     </div>
-    <div fx:with-each="$inputs">
+    <div fx:with-each="$inputs" fx:omit="count($inputs) == 1">
         <span class="fx_file_input {if !$checked}fx_file_input_inactive{/if} fx_file_input_{$type}" fx:item>
-            <input type="{if $type == 'file'}file{else}text{/if}" name="{$field_name}[{$type}]" />
+            <input 
+                type="{if $type == 'file'}file{else}text{/if}" 
+                name="{$field_name}[{$type}]" 
+                {$extra_input_atts /}
+                />
         </span>
+    </div>
+    <div class="fx_file_field_value" fx:if="$value">
+        <input 
+            type="hidden"
+            class="fx_file_uploaded_inp" 
+            name="{$field_name}[uploaded]"
+            value="{$value.path | htmlspecialchars}" />
+        <span class="fx_file_field_value__name">{$value.filename}</span>
+        <span class="fx_file_field_value__size">{$value.size}</span>
     </div>
 </div>
         

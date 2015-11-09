@@ -7,13 +7,34 @@ use Floxim\Floxim\System\Fx as fx;
 
 class Fields extends System\Collection
 {
+    
+    public static function create($fields = null) {
+        $instance = new Fields();
+        if ($fields instanceof System\Collection) {
+            $instance = $fields->fork($instance);
+        }
+        if (is_array($fields) || $fields instanceof \Traversable) {
+            foreach ($fields as $fk => $f) {
+                if (! (is_array($f) || $f instanceof \ArrayAccess) ) {
+                    continue;
+                }
+                if (!isset($f['name'])) {
+                    $f['name'] =  $fk;
+                }
+                $instance->addField($f);
+            }
+        }
+        return $instance;
+    }
 
     public function offsetSet($offset, $value)
     {
         if (!$value instanceof Field\Field) {
+            $value['owner'] = $this;
             $value = Field\Field::create($value);
         }
-        $this->data[$offset] = $value;
+        //$this->data[$offset] = $value;
+        $this->set($offset, $value);
     }
 
     public function setValue($field, $value)
@@ -25,7 +46,17 @@ class Fields extends System\Collection
 
     public function addField($params)
     {
-        $field = Field\Field::create($params + array('owner' => $this));
+        if ($params instanceof Field\Field) {
+            $field = $params;
+            $field->setOwner($this);
+        } else {
+            if ($params instanceof \Floxim\Floxim\System\Entity) {
+                $entity = $params;
+                $params = $entity instanceof \Floxim\Form\FieldEntityInterface ? $entity->getFieldParams() : $entity->get();
+                $params['_entity'] = $entity;
+            }
+            $field = Field\Field::create($params + array('owner' => $this));
+        }
         $this[$field['name']] = $field;
         return $field;
     }

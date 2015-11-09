@@ -29,7 +29,11 @@ class Form implements \ArrayAccess, Template\Entity
             'skin' => 'default',
             'messages' => fx::collection()
         ), $params);
-        $fields = new Fields();
+        if (isset($params['fields'])) {
+            $fields = Fields::create($params['fields']);
+        } else {
+            $fields = new Fields();
+        }
         $fields->form = $this;
         $params['fields'] = $fields;
         $this->params = $params;
@@ -240,6 +244,19 @@ class Form implements \ArrayAccess, Template\Entity
         $errors = isset($this['errors']) ? $this['errors']->copy() : fx::collection();
         $errors->concat($this->params['fields']->getErrors());
         return $errors;
+    }
+    
+    public function getErrorsPlain()
+    {
+        $errors = $this->getErrors();
+        $res = array();
+        foreach ($errors as $e) {
+            $res []= array(
+                'error' => $e['error'],
+                'field' => $e['field']['id']
+            );
+        }
+        return $res;
     }
 
     public function addError($error, $field_name = false)

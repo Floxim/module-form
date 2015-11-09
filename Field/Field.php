@@ -10,12 +10,23 @@ class Field implements \ArrayAccess, Template\Entity
 
     protected $params = array();
     
+    protected $owner;
+    
+    public function setOwner($fields_collection) {
+        $this->owner = $fields_collection;
+    }
+    
     public function getAvailableOffsetKeys() {
         return array_flip(array_keys($this->params));
     }
 
     public static function create($params)
     {
+        if ($params instanceof \Floxim\Form\FieldEntityInterface) {
+            $entity = $params;
+            $params = $entity->getFieldParams();
+            $params['_entity'] = $entity;
+        }
         if (!isset($params['type'])) {
             $params['type'] = 'text';
         }
