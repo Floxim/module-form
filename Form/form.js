@@ -46,6 +46,14 @@ $('html').on('submit', 'form.fx_form_ajax', function(e) {
         dataType:'html',
         data:form_data,
         success: function(data) {
+            try {
+                data = $.parseJSON(data);
+                if (data.format === 'fx-response') {
+                    data = data.response;
+                }
+            } catch (e) {
+                console.log('not a json');
+            }
             data = $.trim(data);
             var $data = $(data);
             var $ib = $form.closest('.fx_infoblock');
