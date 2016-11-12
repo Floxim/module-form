@@ -1,0 +1,40 @@
+/*
+vars:
+    button_bg:
+        label: Фон
+        type: css-background
+        default: 
+            - light
+            - color, alt 5 1
+    button_font:
+        label: Шрифт
+        type: css-font
+    button_color:
+        type: palette
+        transparent: true
+        label: Цвет
+        empty: false
+    button_padding:
+        label: Отступ
+        type: measures
+        prop: padding
+        step: 0.1
+    button_border:
+        label: Рамка
+        type: measures
+        prop: borders
+*/
+
+.button_style_default(
+    @button_bg: @button_bg;
+    @button_font: none;
+    @button_color: main 0;
+    @button_padding: 0.2em;
+    @button_border: none;
+) {
+    padding:@button_padding;
+    .border(@button_border);
+    .background(@button_bg);
+    .font(@button_font);
+    .tcolor-on-bg(@button_color; @button_bg);
+}

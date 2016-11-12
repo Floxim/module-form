@@ -1,0 +1,26 @@
+/*
+vars:
+    layout:
+        label: Расположение
+        type: livesearch
+        values:
+            column: В столбик
+            row: В строку
+    margin:
+        label: Отступ
+        type: number
+        min: 0
+        max: 5
+        step: 0.25
+*/
+.form_style_default
+(
+    @layout: column;
+    @margin: 1.5em;
+) {
+    #__row {
+        & when (@layout = column) {
+            margin-bottom: @margin;
+        }
+    }
+}
