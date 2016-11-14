@@ -17,7 +17,9 @@
     
     {first}
         {set $form = $ /}
-        {= $form.prepare() /}
+        {if $form}
+            {= $form.prepare() /}
+        {/if}
     {/first}
     
     {$form.getHidden() || :input /}

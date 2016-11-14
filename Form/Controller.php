@@ -13,6 +13,9 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
             return;
         }
         $form = fx::data('floxim.form.form')->with('fields')->where('id', $form_id)->one();
+        if (!$form) {
+            return;
+        }
         if ($form->isSent() && !$form->hasErrors()) {
             $form->finish();
         }
