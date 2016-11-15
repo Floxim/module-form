@@ -86,6 +86,18 @@ tabs:
         .font(@label_font);
     }
     
+    #__control {
+        position:relative;
+        .font(@input_font);
+    }
+    
+    #__icon {
+        position:absolute;
+        .tcolor-on-bg(@input_color; @input_bg);
+        top: extract(@input_padding, 1);
+        left: extract(@input_padding, 4);
+    }
+    
     #__input {
         #_type_text,
         #_type_password,
@@ -93,7 +105,18 @@ tabs:
             padding:@input_padding;
             .border(@input_border);
             .background(@input_bg);
+            .tcolor-on-bg(@input_color; @input_bg);
             .font(@input_font);
         }
+    }
+    
+    #__error {
+        .font(@label_font);
+        .color(alt 2);
+        margin-bottom:0.3em;
+    }
+    
+    #__input_has-icon {
+        padding-left: ~"calc(" extract(@input_padding, 4) ~" + 1.5em)";
     }
 }

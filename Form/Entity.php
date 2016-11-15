@@ -6,11 +6,19 @@ use Floxim\Floxim\System\Fx as fx;
 class Entity extends \Floxim\Floxim\Component\Basic\Entity
 {
     
+    public $is_generated = false;
+    
     public function __construct($data = array(), $component_id = null) 
     {
         parent::__construct($data, $component_id);
         $this['errors'] = fx::collection();
     }
+    
+    public function isGenerated()
+    {
+        return (bool) $this->is_generated;
+    }
+            
     
     public function addFields($fields)
     {
@@ -95,6 +103,16 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return false;
     }
     
+    public function _getMessagesBefore()
+    {
+        return $this['messages']->find('when_to_show', 'after', '!=');
+    }
+    
+    public function _getMessagesAfter()
+    {
+        return $this['messages']->find('when_to_show', 'before', '!=');
+    }
+    
     public function validateValues()
     {
         $that = $this;
@@ -108,13 +126,26 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         });
     }
     
-    public function addMessage($m)
+    public function addMessage($m, $when_to_show = 'always')
     {
+        if (is_string($m)) {
+            $m = array(
+                'text' => $m,
+                'when_to_show' => $when_to_show
+            );
+        }
         $this['messages'] []= $m;
     }
     
-    public function finish()
+    public function finish($message = null)
     {
+        if ($message) {
+            if (is_string($message)) {
+                $message = (array) $message;
+            }
+            $message['when_to_show'] = 'after';
+            $this->addMessage($message);
+        }
         $this['is_finished'] = true;
         $this->trigger('finish');
     }
@@ -169,13 +200,13 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return null;
     }
     
-    public function addError($message, $field = false)
+    public function addError($error, $field = false)
     {
         if ($field  && ($field = $this->getField($field))) {
-            $field->addError($message);
+            $field->addError($error);
             return $this;
         }
-        $this['errors'][]= array('error' => $message);
+        $this['errors'][]= array('error' => $error);
         return $this;
     }
     

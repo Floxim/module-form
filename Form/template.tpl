@@ -26,24 +26,36 @@
     
     {apply errors /}
     
-    
-    <div fx:e="inputs">
-        <div fx:each="$form.getInputs() as $field" 
-             fx:e="row {if $field.has_errors} has-errors{/if}" 
-             fx:b="field type_{$field.field_type /}"
-             fx:styled="label:Стиль полей">
+    {if !$form.is_finished}
+        
+        {apply messages with $messages = $form.messages_before /}
+        
+        <div fx:e="body">
+            <div fx:e="inputs">
+                <div fx:each="$form.getInputs() as $field" 
+                     fx:e="row {if $field.has_errors} has-errors{/if}" 
+                     fx:b="field type_{$field.field_type /}"
+                     fx:styled="label:Стиль полей">
 
-            <label fx:e="label" for="{$field.field_id}">{$field.label /}</label>
-            {apply errors with $errors = $field.errors /}
-            <div fx:e="control">
-                {apply input /}
+                    <label fx:e="label" for="{$field.field_id}">{$field.label /}</label>
+                    {apply errors with $errors = $field.errors /}
+                    <div fx:e="control">
+                        <label 
+                            fx:if="$field.icon" 
+                            for="{$field.field_id}" 
+                            fx:e="icon" class="{= fx::icon( $field.icon ) }"></label>
+                        {apply input /}
+                    </div>
+                </div>
+            </div>
+
+            <div fx:e="buttons">
+                {$form.getButtons() || :input /}
             </div>
         </div>
-    </div>
-    
-    <div fx:e="buttons">
-        {$form.getButtons() || :input /}
-    </div>
+    {else}
+        {apply messages with $messages = $form.messages_after /}
+    {/if}
     
     {js}
         FX_JQUERY_PATH as jquery
@@ -57,13 +69,22 @@
         {$error /}
     </div>
 </div>
+    
+<div fx:template="messages" fx:e='messages' fx:if='count($messages)' class='fx_no_add'>
+    <div fx:e='message' fx:each='$messages as $message'>
+        <div fx:e='message-header' fx:aif='$message.name'>
+            {apply floxim.ui.header:header with $header = $message.name /}
+        </div>
+        <div fx:e='message-text' fx:aif='$message.text'>{$message.text /}</div>
+    </div>
+</div>
         
 <input 
     fx:template="input" 
     name="{$name editable='false'}"
     id="{$field_id}"
     type="{$field_type}"
-    fx:e="input type_{$field_type}"
+    fx:e="input type_{$field_type} {if $field.icon}has-icon{/if}"
     autocomplete="off"
     {if $field_type === 'text' || $field_type === 'password'}
         placeholder="{$placeholder /}"
@@ -86,7 +107,8 @@
     fx:b="button"
     fx:styled="label:Стиль кнопки"
     id="{$field_id}">
-    {$label /}
+    <span fx:e="label">{$label /}</span>
+    <span fx:if="$icon" fx:e="icon" class="{= fx::icon( $icon )}"></span>
 </button>
 
 <textarea

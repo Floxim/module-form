@@ -12,10 +12,13 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
             // some fake data?
             return;
         }
-        $form = fx::data('floxim.form.form')->with('fields')->where('id', $form_id)->one();
+        $form = fx::data('floxim.form.form')->with('fields')->with('messages')->where('id', $form_id)->one();
         if (!$form) {
             return;
         }
+        
+        $form = $this->ajaxForm($form);
+        
         if ($form->isSent() && !$form->hasErrors()) {
             $form->finish();
         }

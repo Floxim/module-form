@@ -23,4 +23,21 @@ vars:
             margin-bottom: @margin;
         }
     }
+    
+    & when (@layout = row) {
+        #__body {
+            display:flex;
+            align-items:flex-end;
+        }
+        #__inputs {
+            display:flex;
+        }
+        #__row {
+            margin-right: @margin;
+        }
+    }
+    
+    #__message-text {
+        .tcolor(main 0);
+    }
 }

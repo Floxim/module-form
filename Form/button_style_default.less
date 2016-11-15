@@ -33,8 +33,16 @@ vars:
     @button_border: none;
 ) {
     padding:@button_padding;
+    cursor:pointer;
     .border(@button_border);
     .background(@button_bg);
     .font(@button_font);
     .tcolor-on-bg(@button_color; @button_bg);
+    
+    #__icon {
+        margin-left:0.5em;
+        font-size:1.4em;
+        margin-top:-0.2em;
+        vertical-align:middle;
+    }
 }

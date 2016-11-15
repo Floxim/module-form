@@ -9,6 +9,7 @@ class Finder extends \Floxim\Floxim\Component\Basic\Finder
     {
         $form = $this->create($params);
         $form->is_generated = true;
+        $form['fields'] = fx::collection();
         return $form;
     }
 }
