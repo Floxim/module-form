@@ -79,7 +79,9 @@
         <div fx:e='message-header' fx:aif='$message.name'>
             {apply floxim.ui.header:header with $header = $message.name /}
         </div>
-        <div fx:e='message-text' fx:aif='$message.text'>{$message.text /}</div>
+        <div fx:e='message-text' fx:aif='$message.text'>
+            {apply floxim.main.text:text with $text = $message.text /}
+        </div>
     </div>
 </div>
         
