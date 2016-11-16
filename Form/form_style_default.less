@@ -35,6 +35,19 @@ vars:
         #__row {
             margin-right: @margin;
         }
+        @media(max-width:800px) {
+            #__body {
+                flex-wrap:wrap;
+            }
+            #__inputs {
+                flex-wrap:wrap;
+                width:100%;
+            }
+            #__row {
+                width:100%;
+                margin-bottom:@margin * 2;
+            }
+        }
     }
     
     #__messages {
