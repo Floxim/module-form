@@ -68,8 +68,12 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return $this->isSent();
     }
     
-    public function isSent()
+    public function isSent($set = null)
     {
+        if (func_num_args() > 0 && $set) {
+            $this->is_sent = true;
+            return true;
+        }
         if (is_null($this->is_sent)) {
             $input = $this->getInput();
             $this->is_sent = isset($input[$this->getSentMarkerName()]);

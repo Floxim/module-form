@@ -2,6 +2,28 @@
     
 var ns = 'floxim--form--form';
 
+var QueryStringToHash = function QueryStringToHash  (query) {
+  var query_string = {};
+  var vars = query.split("&");
+  for (var i=0;i<vars.length;i++) {
+    var pair = vars[i].split("=");
+    pair[0] = decodeURIComponent(pair[0]);
+    pair[1] = decodeURIComponent(pair[1]);
+        // If first entry with this name
+    if (typeof query_string[pair[0]] === "undefined") {
+      query_string[pair[0]] = pair[1];
+        // If second entry with this name
+    } else if (typeof query_string[pair[0]] === "string") {
+      var arr = [ query_string[pair[0]], pair[1] ];
+      query_string[pair[0]] = arr;
+        // If third or later entry with this name
+    } else {
+      query_string[pair[0]].push(pair[1]);
+    }
+  } 
+  return query_string;
+};
+
 
 $('html').on('click', '.'+ns+'--form :input[type="submit"]', function() {
     var $b = $(this),
@@ -16,43 +38,30 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     if (event_before.isDefaultPrevented()) {
         return false;
     }
-    if ($('input[name="_ajax_base_url"]', $form).length === 0) {
-        $form.append('<input type="hidden" name="_ajax_base_url" value="'+document.location.href+'" />');
-    } 
+    
     var button_name = $form.data('pressed_button_name');
     if (button_name) {
         var $button_placeholder = $('<input type="hidden" name="'+button_name+'" value="1" />');
         $form.append($button_placeholder);
     }
-    var form_data = $form.serialize();
+    var form_data = QueryStringToHash($form.serialize());
     if (button_name) {
         $button_placeholder.remove();
     }
-    $.ajax({
-        type:'post',
-        url:$form.attr('action'),
-        dataType:'html',
-        data:form_data,
-        success: function(data) {
-            try {
-                data = $.parseJSON(data);
-                if (data.format === 'fx-response') {
-                    data = data.response;
-                }
-            } catch (e) {
-                //console.log('not a json');
-            }
-            data = $.trim(data);
-            var $data = $(data);
-            var $ib = $form.closest('.fx_infoblock');
-            var $container = $ib.parent();
-            $ib.before($data);
-            var event_reload = $.Event('fx_form_reloaded', {reloaded:$data});
-            $form.trigger(event_reload);
-            $ib.remove();
-            $('.'+ns+'--form_sent .'+ns+'--form__row_has-errors :input', $container).first().focus();
-            $data.trigger('fx_infoblock_loaded');
-        }
+    
+    Floxim.ajax({
+        url: $form.attr('action'),
+        data: form_data
+    }).then(function(data) {
+        var $data = $(data);
+        var $ib = $form.closest('.fx_infoblock');
+        var $container = $ib.parent();
+        $ib.before($data);
+        var event_reload = $.Event('fx_form_reloaded', {reloaded:$data});
+        $form.trigger(event_reload);
+        $ib.remove();
+        $('.'+ns+'--form_sent .'+ns+'--form__row_has-errors :input', $container).first().focus();
+        $data.trigger('fx_infoblock_loaded');
     });
     return false;
 });

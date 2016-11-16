@@ -13,14 +13,18 @@
     action="{$action}" 
     method="post">
     
-    {apply fake_inputs /}
-    
     {first}
         {set $form = $ /}
         {if $form}
             {= $form.prepare() /}
         {/if}
     {/first}
+    
+    {if $form.add_fake_inputs}
+        {apply fake_inputs /}
+    {/if}
+    
+    
     
     {$form.getHidden() || :input /}
     
@@ -101,12 +105,18 @@
     {if $value}checked="checked"{/if}
     />
 
+{template id="input" test="$field_type == 'button'"}
+    {apply button /}
+{/template}
+
 <button 
-    fx:template="input[$field_type == 'button']" 
+    fx:template="button" 
     fx:e="button"
     fx:b="button"
     fx:styled="label:Стиль кнопки"
-    id="{$field_id}">
+    {if $button_data}data-button_data='{$button_data | json_encode /}'{/if}
+    {if $field_id}id="{$field_id}"{/if}
+    >
     <span fx:e="label">{$label /}</span>
     <span fx:if="$icon" fx:e="icon" class="{= fx::icon( $icon )}"></span>
 </button>
