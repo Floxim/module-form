@@ -96,4 +96,10 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         }
         return parent::offsetGet($offset);
     }
+    
+    public function prepareForLivesearch($res, $term = '')
+    {
+        $res['name'] = $this['label'];
+        return parent::prepareForLivesearch($res, $term);
+    }
 }

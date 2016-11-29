@@ -6,19 +6,11 @@ use Floxim\Floxim\System\Fx as fx;
 class Entity extends \Floxim\Floxim\Component\Basic\Entity
 {
     
-    public $is_generated = false;
-    
     public function __construct($data = array(), $component_id = null) 
     {
         parent::__construct($data, $component_id);
         $this['errors'] = fx::collection();
     }
-    
-    public function isGenerated()
-    {
-        return (bool) $this->is_generated;
-    }
-            
     
     public function addFields($fields)
     {
@@ -128,6 +120,14 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 );
             }
         });
+        foreach ($this['validators'] as $validator) {
+            $validator->check();
+        }
+        /*
+        $validators = $this['validators'];
+        fx::log($validators, $this);
+         * 
+         */
     }
     
     public function addMessage($m, $when_to_show = 'always')
@@ -197,7 +197,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     public function getValue($field_name)
     {
         $this->isSent();
-        $field = $this->getField($field_name);
+        $field = $this->findField($field_name);
         if ($field) {
             return $field->getValue($field);
         }
@@ -206,7 +206,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     
     public function addError($error, $field = false)
     {
-        if ($field  && ($field = $this->getField($field))) {
+        if ($field  && ($field = $this->findField($field))) {
             $field->addError($error);
             return $this;
         }
@@ -214,7 +214,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return $this;
     }
     
-    public function getField($name)
+    public function findField($name)
     {
         return $this['fields']->findOne('name', $name);
     }
@@ -262,6 +262,6 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     
     protected function getSentMarkerName()
     {
-        return 'form-olo-is-sent';
+        return 'form-'.$this['id'].'-is-sent';
     }
 }

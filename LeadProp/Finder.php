@@ -1,11 +1,9 @@
 <?php
-namespace Floxim\Form\Field;
+namespace Floxim\Form\LeadProp;
 
 use Floxim\Floxim\System\Fx as fx;
 
 class Finder extends \Floxim\Floxim\Component\Basic\Finder 
 {
-    public function orderDefault() {
-        $this->order('priority');
-    }
+
 }

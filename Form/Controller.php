@@ -20,6 +20,23 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         $form = $this->ajaxForm($form);
         
         if ($form->isSent() && !$form->hasErrors()) {
+            $lead = fx::data('floxim.form.lead')->create(
+                array(
+                    'created' => time(),
+                    'form' => $form
+                )
+            );
+            foreach ($form->getInputs() as $field) {
+                $lead_prop = fx::data('floxim.form.lead_prop')->create(
+                    array(
+                        'field_name' => $field['label'],
+                        'field' => $field,
+                        'value' => $field->getValue()
+                    )
+                );
+                $lead['props'] []= $lead_prop;
+            }
+            $lead->save();
             $form->finish();
         }
         $this->assign('form', $form);

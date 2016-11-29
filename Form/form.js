@@ -2,27 +2,26 @@
     
 var ns = 'floxim--form--form';
 
-var QueryStringToHash = function QueryStringToHash  (query) {
-  var query_string = {};
-  var vars = query.split("&");
-  for (var i=0;i<vars.length;i++) {
-    var pair = vars[i].split("=");
-    pair[0] = decodeURIComponent(pair[0]);
-    pair[1] = decodeURIComponent(pair[1]);
-        // If first entry with this name
-    if (typeof query_string[pair[0]] === "undefined") {
-      query_string[pair[0]] = pair[1];
-        // If second entry with this name
-    } else if (typeof query_string[pair[0]] === "string") {
-      var arr = [ query_string[pair[0]], pair[1] ];
-      query_string[pair[0]] = arr;
-        // If third or later entry with this name
-    } else {
-      query_string[pair[0]].push(pair[1]);
-    }
-  } 
-  return query_string;
-};
+var QueryStringToHash;
+
+(function() {
+    var re = /([^&=]+)=?([^&]*)/g;
+    var decodeRE = /\+/g;  // Regex for replacing addition symbol with a space
+    var decode = function (str) {return decodeURIComponent( str.replace(decodeRE, " ") );};
+    QueryStringToHash = function(query) {
+        var params = {}, e;
+        while ( e = re.exec(query) ) { 
+            var k = decode( e[1] ), v = decode( e[2] );
+            if (k.substring(k.length - 2) === '[]') {
+                k = k.substring(0, k.length - 2);
+                (params[k] || (params[k] = [])).push(v);
+            }
+            else params[k] = v;
+        }
+        return params;
+    };
+})();
+    
 
 
 $('html').on('click', '.'+ns+'--form :input[type="submit"]', function() {
@@ -49,12 +48,14 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
         $button_placeholder.remove();
     }
     
+    var $ib = $form.closest('.fx_infoblock');
+    
     Floxim.ajax({
         url: $form.attr('action'),
-        data: form_data
+        data: form_data,
+        $block: $ib
     }).then(function(data) {
         var $data = $(data);
-        var $ib = $form.closest('.fx_infoblock');
         var $container = $ib.parent();
         $ib.before($data);
         var event_reload = $.Event('fx_form_reloaded', {reloaded:$data});

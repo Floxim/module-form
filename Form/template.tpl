@@ -28,11 +28,11 @@
     
     {$form.getHidden() || :input /}
     
-    {apply errors /}
-    
     {if !$form.is_finished}
         
         {apply messages with $messages = $form.messages_before /}
+        
+        {apply errors /}
         
         <div fx:e="body">
             <div fx:e="inputs">
@@ -70,7 +70,11 @@
     
 <div fx:template="errors" fx:e="errors" fx:if="count($errors)">
     <div fx:e="error" fx:each="$errors as $error">
-        {$error /}
+        {if gettype($error) === 'string'}
+            {$error /}
+        {else}
+            {$error.text /}
+        {/if}
     </div>
 </div>
     
