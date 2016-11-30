@@ -123,11 +123,6 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         foreach ($this['validators'] as $validator) {
             $validator->check();
         }
-        /*
-        $validators = $this['validators'];
-        fx::log($validators, $this);
-         * 
-         */
     }
     
     public function addMessage($m, $when_to_show = 'always')
@@ -257,7 +252,6 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             }
         }
         $this['form_id'] = $form_id;
-        //$this->validateValues();
     }
     
     protected function getSentMarkerName()

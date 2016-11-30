@@ -11,8 +11,6 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         $form = $this['form'];
         if (!$form) {
             $form = fx::data('floxim.form.form')->create();
-            fx::cdebug('mak frm', $form, $this);
-            //return;
         }
         $inputs = $form->getInputs();
         $jsf['fields'] = array();
@@ -84,7 +82,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 'getters' => array(
                     'field' => function($path) use ($form) {
                         $field = $form->getInputs()->findOne('id', $path[0]);
-                        $val  = trim($field->getValue());
+                        $val  = $field ? trim($field->getValue()) : null;
                         return $val;
                     }
                 )
