@@ -37,9 +37,68 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
                 $lead['props'] []= $lead_prop;
             }
             $lead->save();
+            $mailer = $this->getMailer($form);
+            
+            $mailer->send();
+            
             $form->finish();
         }
         $this->assign('form', $form);
+    }
+    
+    protected function getMailer($form)
+    {
+        $m = fx::mail();
+        $from_addr = fx::config('mail.from_address');
+        $from_name = fx::config('mail.from_name');
+        $m->from($from_addr, $from_name);
+        
+        $user = fx::data('floxim.user.user')->where('is_admin', 1)->one();
+        
+        $m->to($user['email']);
+        
+        $m->subject('Сообщение формы «'.$form['name'].'»');
+        
+        $show_fields = function($fields) {
+            $res = '<table style="border-collapse:collapse;">';
+            foreach ($fields as $name => $val) {
+                $res .= '<tr>'.
+                    '<td style="vertical-align:top; border:1px solid #CCC; padding:3px 10px;">'.
+                        '<b>'.$name.':</b>'.
+                    '</td>'.
+                    '<td style="vertical-align:top; border:1px solid #CCC; padding:3px 10px;">'.
+                        nl2br($val).
+                    '</td>'.
+                '</tr>';
+            }
+            $res .= '</table>';
+            return $res;
+        };
+        
+        $msg = '<h2>Новое сообщение</h2>';
+        
+        $fields = array();
+        foreach ($form->getInputs() as $field) {
+            $fields[$field['label']] = strip_tags($field->getValue());
+        }
+        
+        $msg .= $show_fields($fields);
+        
+        $msg .= '<h3>Технические подробности</h3>';
+        
+        $page = fx::env('page');
+        $extras = array(
+            'Форма' => $form['name'],
+            'IP' => $_SERVER['REMOTE_ADDR'],
+            'Страница' => '<a href="http://'.$_SERVER['HTTP_HOST'].$page['url'].'" target="_blank">'.$page['name'].'</a>',
+            'Дата и время' => date('d.m.Y, H:i')
+        );
+        
+        $msg .= $show_fields($extras);
+        
+        $m->message($msg);
+        
+        return $m;
     }
     
     public function getAvailForms()
