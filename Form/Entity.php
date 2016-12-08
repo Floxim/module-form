@@ -36,6 +36,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 $field['type'] = 'button';
             }
             $field['type'] = 'floxim.form.'.$field['type'];
+            fx::log('generating', $field['type'], $field);
             $field = fx::data('floxim.form.field')->generate($field);
         }
         
@@ -68,6 +69,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         }
         if (is_null($this->is_sent)) {
             $input = $this->getInput();
+            fx::log('test sent', $this->getSentMarkerName(), $input, $_POST);
             $this->is_sent = isset($input[$this->getSentMarkerName()]);
             if ($this->is_sent) {
                 $this->loadValues();
@@ -120,6 +122,9 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 );
             }
         });
+        if (!$this['validators']) {
+            return;
+        }
         foreach ($this['validators'] as $validator) {
             $validator->check();
         }
@@ -243,6 +248,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 'type' => 'hidden'
             )
         );
+        
         $tpl = fx::env()->getCurrentTemplate();
         $form_id = isset($this['form_id']) ? $this['form_id'] : 'form';
         if ($tpl) {

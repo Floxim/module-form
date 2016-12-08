@@ -24,8 +24,6 @@
         {apply fake_inputs /}
     {/if}
     
-    
-    
     {$form.getHidden() || :input /}
     
     {if !$form.is_finished}
