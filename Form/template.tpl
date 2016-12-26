@@ -1,6 +1,6 @@
-<div fx:template="form_block" fx:of="form">
+{template id="form_block" of="form" name="Форма"}
     {apply form with $form /}
-</div>
+{/template}
 
 <form 
     fx:template="form" 
@@ -126,8 +126,9 @@
 </button>
 
 <textarea
-    fx:template="input[$field_type == 'text' && $is_long]"
+    fx:template="input[$field_type == 'textarea']"
     id="{$field_id}"
+    rows="{$rows}"
     fx:e="input type_textarea"
     placeholder="{$placeholder /}"
     name="{$field.name}">{$field.value | htmlentities /}</textarea>

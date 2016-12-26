@@ -12,15 +12,47 @@ vars:
         min: 0
         max: 5
         step: 0.25
+    width:
+        label: Ширина полей
+        type: number
+        min: 20
+        max: 100
+        step: 5
+        parent: layout == column
+    align:
+        type: css-align
+        parent: width !== 100
+container:
+    align: '@align'
 */
 .form_style_default
 (
     @layout: column;
     @margin: 1.5em;
+    @width: 100%;
+    @align: none;
 ) {
-    #__row {
-        & when (@layout = column) {
+    
+    & when (@layout = column) {
+        
+        display:flex;
+        flex-direction:column;
+        
+        #__row {
             margin-bottom: @margin;
+        }
+        
+        & when not(@width = 100%)  {
+            
+            .align-items(@align);
+            
+            #__body {
+                width:@width;
+            }
+            
+            #__buttons {
+                .text-align();
+            }
         }
     }
     
@@ -29,12 +61,15 @@ vars:
             display:flex;
             align-items:flex-end;
         }
+        
         #__inputs {
             display:flex;
         }
+        
         #__row {
             margin-right: @margin;
         }
+        
         @media(max-width:800px) {
             #__body {
                 flex-wrap:wrap;
