@@ -10,9 +10,11 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         $form_id = $this->getParam('form_id');
         if (!$form_id) {
             // some fake data?
-            return;
+            //return;
+            $form = $this->getDefaultForm();
+        } else {
+            $form = fx::data('floxim.form.form')->with('fields')->with('messages')->where('id', $form_id)->one();
         }
-        $form = fx::data('floxim.form.form')->with('fields')->with('messages')->where('id', $form_id)->one();
         if (!$form) {
             return;
         }
@@ -101,6 +103,16 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         return $m;
     }
     
+    public function getActionSettings($action) {
+        return array(
+            'form_id' => array(
+                'type' => 'livesearch',
+                'label' => 'Форма',
+                'values' => $this->getAvailForms()
+            )
+        );
+    }
+    
     public function getAvailForms()
     {
         $forms = $this->getFinder()->all();
@@ -117,6 +129,33 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         return $res;
     }
     
+    protected  function getDefaultForm()
+    {
+        $form = fx::data('floxim.form.form')->create(array('name' => ''));
+        $fields = [
+            [
+                'type' => 'text',
+                'label' => 'Ваше имя'
+            ],
+            [
+                'type'=> 'text',
+                'label' => 'E-mail'
+            ],
+            [
+                'type'=> 'textarea',
+                'rows' => 5,
+                'label' => 'Сообщение'
+            ],
+            [
+                'type' => 'button',
+                'label' => 'Отправить'
+            ]
+        ];
+        $form->addFields($fields);
+        return $form;
+    }
+
+
     public function install(\Floxim\Floxim\Component\Infoblock\Entity $ib, $ctr, $params)
     {
         if (!isset($params['form_id']) || !$params['form_id']) {

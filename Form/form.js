@@ -236,7 +236,7 @@ function init_controls($node) {
     $('.fx_form .fx-date-field', $node).each(function() {
         handle_date_field($(this));
     });
-    
+    /*
     $('.livesearch', $node).each(function() {
         var $node = $(this);
         var ls = new fx_livesearch($node);
@@ -245,6 +245,7 @@ function init_controls($node) {
             ls.loadValues(ls.plain_values);
         }
     });
+    */
 }
 
 $(function() {
