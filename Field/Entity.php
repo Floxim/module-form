@@ -14,6 +14,18 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         $this['errors'] = fx::collection();
     }
     
+    public static function prepare($field)
+    {
+        if (!isset($field['type'])) {
+            $field['type'] = 'text';
+        }
+        if ($field['type'] === 'submit') {
+            $field['type'] = 'button';
+        }
+        $field['type'] = 'floxim.form.'.$field['type'];
+        return $field;
+    }
+    
     public function _getFieldType() 
     {
         $type = $this['type'];

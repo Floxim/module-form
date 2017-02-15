@@ -131,7 +131,7 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
     
     protected  function getDefaultForm()
     {
-        $form = fx::data('floxim.form.form')->create(array('name' => ''));
+        $form = fx::data('floxim.form.form')->create(array('name' => 'Форма'));
         $fields = [
             [
                 'type' => 'text',
@@ -151,7 +151,13 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
                 'label' => 'Отправить'
             ]
         ];
-        $form->addFields($fields);
+        foreach ($fields as $field) {
+            $field = \Floxim\Form\Field\Entity::prepare($field);
+            $form->addField(
+                fx::data($field['type'])->create($field)
+            );
+        }
+        //$form->addFields($fields);
         return $form;
     }
 
@@ -159,7 +165,12 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
     public function install(\Floxim\Floxim\Component\Infoblock\Entity $ib, $ctr, $params)
     {
         if (!isset($params['form_id']) || !$params['form_id']) {
+            /*
             $form = fx::data('floxim.form.form')->create(array('name' => 'My new form'));
+            $form->save();
+             * 
+             */
+            $form = $this->getDefaultForm();
             $form->save();
             $ib->digSet('params.form_id', $form['id']);
             $ib->save();

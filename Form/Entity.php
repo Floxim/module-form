@@ -29,13 +29,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     public function addField($field)
     {
         if (is_array($field)) {
-            if (!isset($field['type'])) {
-                $field['type'] = 'text';
-            }
-            if ($field['type'] === 'submit') {
-                $field['type'] = 'button';
-            }
-            $field['type'] = 'floxim.form.'.$field['type'];
+            $field = \Floxim\Form\Field\Entity::prepare($field);
             $field = fx::data('floxim.form.field')->generate($field);
         }
         
