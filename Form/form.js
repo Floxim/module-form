@@ -228,13 +228,69 @@ $block.elem('datepicker_icon').click(function() {
 
 };
 
+function base64_decode( data ) {	// Decodes data encoded with MIME base64
+	// 
+	// +   original by: Tyler Akins (http://rumkin.com)
+
+
+	var b64 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
+	var o1, o2, o3, h1, h2, h3, h4, bits, i=0, enc='';
+
+	do {  // unpack four hexets into three octets using index points in b64
+		h1 = b64.indexOf(data.charAt(i++));
+		h2 = b64.indexOf(data.charAt(i++));
+		h3 = b64.indexOf(data.charAt(i++));
+		h4 = b64.indexOf(data.charAt(i++));
+
+		bits = h1<<18 | h2<<12 | h3<<6 | h4;
+
+		o1 = bits>>16 & 0xff;
+		o2 = bits>>8 & 0xff;
+		o3 = bits & 0xff;
+
+		if (h3 == 64)	  enc += String.fromCharCode(o1);
+		else if (h4 == 64) enc += String.fromCharCode(o1, o2);
+		else			   enc += String.fromCharCode(o1, o2, o3);
+	} while (i < data.length);
+
+	return enc;
+}
+
+
+function handle_ce($form) {
+    var ce = $form.data('ce');
+    if (!ce) {
+        return;
+    }
+    ce = base64_decode(ce);
+    ce = ce.replace(/round/g, 'Math.round');
+    var res = eval(ce);
+    if (res) {
+        var $inps = $('input', $form);
+        $inps.each(function() {
+            var $inp = $(this);
+            if ($inp.attr('name').match(/captcha$/)) {
+                $inp.val(res);
+                $inp.closest('.'+ns+'--form__row').hide();
+                return false;
+            }
+        });
+    }
+}
+
 function init_controls($node) {
+    /*
     $('.fx_form .fx_input_type_wysiwyg', $node).each(function() {
         $(this).redactor({});
     });
 
     $('.fx_form .fx-date-field', $node).each(function() {
         handle_date_field($(this));
+    });
+    */
+   
+    $('.'+ns+'--form', $node).each(function() {
+        handle_ce($(this));
     });
     /*
     $('.livesearch', $node).each(function() {
@@ -253,7 +309,7 @@ $(function() {
 });
 
 $('html').on('fx_infoblock_loaded', function(e) {
-    var $form = $('.fx_form', e.target);
+    var $form = $('.'+ns+'--form', e.target);
     $form.trigger('fx_form_loaded');
 });
 

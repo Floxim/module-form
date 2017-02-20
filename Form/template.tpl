@@ -9,8 +9,12 @@
         {if $form.is_sent}sent{/if}
         {if $form.ajax}ajax{/if}
     " 
-    fx:styled='label:Стиль формы'
-    action="{$action}" 
+    {if $form.captcha_expression}
+        data-ce="{$form.captcha_expression /}"
+    {/if}
+    action="" 
+    {if $action}data-ajax-action="{$action}"{/if}
+    fx:styled-inline
     method="post">
     
     {first}
@@ -36,9 +40,9 @@
             <div fx:e="inputs">
                 <div fx:each="$form.getInputs() as $field" 
                      fx:e="row {if $field.has_errors} has-errors{/if}" 
-                     fx:b="field type_{$field.field_type /}"
-                     fx:styled="label:Стиль полей">
-
+                     fx:b="field type_{$field.field_type /}">
+                    {apply floxim.ui.box:box with $item = $field, $box_id = 'fieldbox' /}
+                    {*
                     <label fx:e="label" for="{$field.field_id}">{$field.label /}</label>
                     {apply errors with $errors = $field.errors /}
                     <div fx:e="control">
@@ -48,6 +52,7 @@
                             fx:e="icon" class="{= fx::icon( $field.icon ) }"></label>
                         {apply input /}
                     </div>
+                    *}
                 </div>
             </div>
 
@@ -65,6 +70,13 @@
     {/js}
 </form>
     
+<label fx:template="label" for="{$item.field_id}">
+    {apply floxim.main.text:text with $text = $item.label /}
+</label>
+
+<div fx:b="control" fx:template="control" fx:styled="Стиль поля">
+    {apply input with $field = $item /}
+</div>
     
 <div fx:template="errors" fx:e="errors" fx:if="count($errors)">
     <div fx:e="error" fx:each="$errors as $error">
@@ -77,14 +89,10 @@
 </div>
     
 <div fx:template="messages" fx:e='messages' fx:if='count($messages)' class='fx_no_add'>
-    <div fx:e='message' fx:each='$messages as $message'>
-        <div fx:e='message-header' fx:aif='$message.name'>
-            {apply floxim.ui.header:header with $header = $message.name /}
-        </div>
-        <div fx:e='message-text' fx:aif='$message.text'>
-            {apply floxim.main.text:text with $text = $message.text /}
-        </div>
-    </div>
+    {set $box_label = 'Сообщения' /}
+    {each $messages as $message}
+        {apply floxim.ui.box:box el message with $item = $message /}
+    {/each}
 </div>
         
 <input 
@@ -97,7 +105,7 @@
     {if $field_type === 'text' || $field_type === 'password'}
         placeholder="{$placeholder /}"
     {/if}
-    value="{$value | htmlspecialchars}"
+    value="{$display_value | htmlspecialchars}"
     />
 
 <input 
@@ -106,7 +114,7 @@
     id="{$field_id}"
     type="checkbox"
     fx:e="input type_checkbox"
-    {if $value}checked="checked"{/if}
+    {if $display_value}checked="checked"{/if}
     />
 
 {template id="input" test="$field_type == 'button'"}

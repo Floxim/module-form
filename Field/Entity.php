@@ -94,7 +94,18 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return $field_meta;
     }
     
+    public function offsetExists($offset) {
+        if ($offset === 'display_value') {
+            return true;
+        }
+        return parent::offsetExists($offset);
+    }
+
+
     public function offsetGet($offset) {
+        if ($offset === 'display_value') {
+            return isset($this->data[$offset]) ? $this->data[$offset] : $this['value'];
+        }
         if (!$this->is_generated || !in_array($offset, self::$editable_for_generated)) {
             return parent::offsetGet($offset);
         }
@@ -113,5 +124,38 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     {
         $res['name'] = $this['label'];
         return parent::prepareForLivesearch($res, $term);
+    }
+    
+    public function getBoxFields() {
+        $res = parent::getBoxFields();
+        $res []= [
+            'keyword' => 'input',
+            'name' => 'Поле',
+            'template' => 'floxim.form.form:control'
+        ];
+        $res []= [
+            'keyword' => 'label',
+            'name' => 'Название',
+            'template' => 'floxim.form.form:label'
+        ];
+        return $res;
+    }
+    
+    public function getDefaultBoxFields()
+    {
+        return [
+            [
+                [
+                    'keyword' => 'label',
+                    'template' => 'value'
+                ]
+            ],
+            [
+                [
+                    'keyword' => 'input',
+                    'template' => 'floxim.form.form:control'
+                ]
+            ]
+        ];
     }
 }

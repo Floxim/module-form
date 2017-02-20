@@ -1,0 +1,73 @@
+/*
+vars:
+    input_bg:
+        label: Фон
+        type: css-background
+        default: 
+            - light
+            - color, main 5 1
+    input_font:
+        label: Шрифт
+        type: css-font
+    input_color:
+        type: palette
+        transparent: true
+        empty: false
+        label: Цвет
+    input_padding:
+        label: Отступ
+        type: measures
+        step: 0.1
+        prop: padding
+    input_border:
+        label: Рамка
+        type: measures
+        prop: borders
+        default:
+            - 2px 1px solid main 3 1
+            - 2px 1px solid main 3 1
+            - 2px 1px solid main 3 1
+            - 2px 1px solid main 3 1
+*/
+
+.control_style_default
+(
+    @input_bg: @input_bg;
+    @input_font: none;
+    @input_color: main 0;
+    @input_padding: 0.2em;
+    @input_border: @input_border;
+)
+{
+    
+    
+    position:relative;
+    .font(@input_font);
+    
+    flex-grow:1;
+    
+    #__icon {
+        position:absolute;
+        .tcolor-on-bg(@input_color; @input_bg);
+        top: extract(@input_padding, 1);
+        left: extract(@input_padding, 4);
+        line-height:1.2;
+    }
+    
+    #__input {
+        #_type_text,
+        #_type_password,
+        #_type_textarea {
+            padding:@input_padding;
+            .border(@input_border);
+            .background(@input_bg);
+            .tcolor-on-bg(@input_color; @input_bg);
+            .font(@input_font);
+            width:100%;
+        }
+    }
+    
+    #__input_has-icon {
+        padding-left: ~"calc(" extract(@input_padding, 4) ~" + 1.5em)";
+    }
+}

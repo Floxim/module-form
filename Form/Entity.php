@@ -252,6 +252,78 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         $this['form_id'] = $form_id;
     }
     
+    public function handleCaptcha()
+    {
+        $session_key = $this['id'].'_captcha';
+        
+        $cv = rand(100,999);
+        $_SESSION[$session_key] = $cv;
+        $nums = explode(',', ',один,два,три,четыре,пять,шесть,семь,восемь,девять');
+        $extracted = rand(1,9);
+        $this->captcha_value = $cv;
+        $this->addField([
+            'name' => $session_key,
+            'label' => 'Сколько будет '.($cv - $extracted).' плюс '.$nums[$extracted].'?',
+            'display_value' => ''
+        ]);
+        $this['validators'] []= fx::data('floxim.form.rule')->create([
+            'text' => 'Для отправки этой формы нужно включить JavaScript (и не быть роботом)',
+            'form' => $this,
+            'validation_closure' => function($form) use ($session_key) {
+                $sent_val = $form->getValue($session_key) * 1;
+                $session_val = fx::input('session', $session_key) * 1;
+                return (!$sent_val || $sent_val !== $session_val);
+            } 
+        ]);
+        $this['captcha_expression'] = self::generateCaptchaExpression($cv);
+    }
+    
+    protected static function generateCaptchaExpression($val)
+    {
+        $e = self::generateExpression($val);
+        return base64_encode($e);
+    }
+
+    protected static function generateExpression($val, $level = 0) 
+    {
+	$ops = ['+','-','/'];
+    
+        if ( round($val) == $val ) {
+            $ops []= '*';
+        }
+
+
+        $op = $ops[array_rand($ops)];
+        $rand = rand(100,999);
+
+        switch ($op) {
+            case '+':
+                    $alt = $val - $rand;
+                    break;
+            case '-':
+                    $alt = $val + $rand;
+                break;
+            case '*':
+                    $alt = round($val / $rand, 4);
+                break;
+                case '/':
+                    $alt = $val * $rand;
+                break;
+        }
+
+        if ($level === 0) {
+            $alt = '('.self::generateExpression($alt, $level+1).')';
+            $rand = '('.self::generateExpression($rand, $level+1).')';
+        }
+
+
+        $expr = $alt.$op.$rand;
+        if ($op === '*') {
+            $expr = 'round('.$expr.')';
+        }
+        return $expr;
+    }
+    
     protected function getSentMarkerName()
     {
         return 'form-'.$this['id'].'-is-sent';

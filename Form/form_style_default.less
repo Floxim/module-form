@@ -35,17 +35,13 @@ container:
     
     width:100%;
     
-    #__row {
-        text-align:left;
-    }
-    
     & when (@layout = column) {
         
         display:flex;
         flex-direction:column;
         
         #__row {
-            margin-bottom: @margin;
+            margin-bottom:@margin;
         }
         
         & when not(@width = 100%)  {
@@ -53,6 +49,10 @@ container:
             .align-items(@align);
             
             #__body {
+                width:@width;
+            }
+            
+            #__messages {
                 width:@width;
             }
             

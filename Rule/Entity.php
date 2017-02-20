@@ -74,52 +74,28 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     
     public function check()
     {
-        $conds = $this->getConditions();
         $form = $this['form'];
-        $res = \Floxim\Floxim\Field\Condition::check(
-            $conds, 
-            array(
-                'getters' => array(
-                    'field' => function($path) use ($form) {
-                        $field = $form->getInputs()->findOne('id', $path[0]);
-                        $val  = $field ? trim($field->getValue()) : null;
-                        return $val;
-                    }
+        if (isset($this['validation_closure'])) {
+            $res = call_user_func($this['validation_closure'], $form);
+        } else {
+            $conds = $this->getConditions();
+            $res = \Floxim\Floxim\Field\Condition::check(
+                $conds, 
+                array(
+                    'getters' => array(
+                        'field' => function($path) use ($form) {
+                            $field = $form->getInputs()->findOne('id', $path[0]);
+                            $val  = $field ? trim($field->getValue()) : null;
+                            return $val;
+                        }
+                    )
                 )
-            )
-        );
-                
+            );
+        }
+        
         if ($res) {
             $field = $this->getAffectedField();
             $form->addError($this, $field);
         }
     }
-    
-    /*
-     * $com = $this->getComponent();
-        $cond_fields = array(
-            $com->getFieldForFilter('entity')
-        );
-        $context = fx::env()->getFieldsForFilter();
-        
-        foreach ($context as $context_prop) {
-            $cond_fields []= $context_prop;
-        }
-        
-        $field = array(
-            'name' => 'conditions',
-            'type' => 'condition',
-            'context' => $context,
-            'fields' => $cond_fields,
-            'label' => false,
-            'types' => fx::data('component')->getTypesHierarchy(),
-            'tab' => array(
-                'icon' => 'ib-list-filtered',
-                'key' => 'conditions',
-                'label' => fx::alang('Conditions', 'controller_component')
-            )
-        );
-        fx::log($field);
-        return $field;
-     */
 }

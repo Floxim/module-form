@@ -21,6 +21,8 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         
         $form = $this->ajaxForm($form);
         
+        $form->handleCaptcha();
+        
         if ($form->isSent() && !$form->hasErrors()) {
             $lead = fx::data('floxim.form.lead')->create(
                 array(
@@ -139,16 +141,30 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
             ],
             [
                 'type'=> 'text',
+                'required' => 1,
                 'label' => 'E-mail'
             ],
             [
                 'type'=> 'textarea',
                 'rows' => 5,
+                'required' => 1,
                 'label' => 'Сообщение'
             ],
             [
                 'type' => 'button',
                 'label' => 'Отправить'
+            ]
+        ];
+        $messages = [
+            [
+                'name' => 'Напишите нам',
+                'text' => '<p>Нам очень важно знать ваше мнение!</p>',
+                'when_to_show' => 'before'
+            ],
+            [
+                'name' => 'Спасибо!',
+                'text' => '<p>Мы постараемся ответить на ваше сообщение в ближайшее время!</p>',
+                'when_to_show' => 'after'
             ]
         ];
         foreach ($fields as $field) {
@@ -157,24 +173,23 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
                 fx::data($field['type'])->create($field)
             );
         }
-        //$form->addFields($fields);
+        foreach ($messages as $msg) {
+            $form->addMessage(
+                fx::data('floxim.form.message')->create($msg)
+            );
+        }
         return $form;
     }
 
 
     public function install(\Floxim\Floxim\Component\Infoblock\Entity $ib, $ctr, $params)
     {
+        $params = $params['params'];
         if (!isset($params['form_id']) || !$params['form_id']) {
-            /*
-            $form = fx::data('floxim.form.form')->create(array('name' => 'My new form'));
-            $form->save();
-             * 
-             */
             $form = $this->getDefaultForm();
             $form->save();
             $ib->digSet('params.form_id', $form['id']);
             $ib->save();
-            fx::log('ib savd', $ib, $params, $form);
         }
     }
 }
