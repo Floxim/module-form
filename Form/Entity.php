@@ -130,6 +130,9 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 'when_to_show' => $when_to_show
             );
         }
+        if (is_array($m)) {
+            $m = fx::data('floxim.form.message')->generate($m);
+        }
         $this['messages'] []= $m;
     }
     
@@ -137,7 +140,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     {
         if ($message) {
             if (is_string($message)) {
-                $message = (array) $message;
+                $message = ['text' => $message];
             }
             $message['when_to_show'] = 'after';
             $this->addMessage($message);
