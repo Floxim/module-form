@@ -138,6 +138,11 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             'name' => 'Название',
             'template' => 'floxim.form.form:label'
         ];
+        $res []= [
+            'keyword' => 'errors',
+            'name' => 'Ошибки',
+            'template' => 'floxim.form.form:errors'
+        ];
         return $res;
     }
     
@@ -146,8 +151,14 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return [
             [
                 [
+                    'keyword' => 'errors',
+                    'template' => 'floxim.form.form:errors'
+                ]
+            ],
+            [
+                [
                     'keyword' => 'label',
-                    'template' => 'value'
+                    'template' => 'floxim.form.form:label'
                 ]
             ],
             [
@@ -157,5 +168,9 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
                 ]
             ]
         ];
+    }
+    
+    public function getSiblingFinder() {
+        return fx::data('floxim.form.field');
     }
 }

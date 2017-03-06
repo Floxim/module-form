@@ -1,6 +1,7 @@
-{template id="form_block" of="form" name="Форма"}
+{template id="form_block" of="form, floxim.user.user:auth_form" name="Форма"}
     {apply form with $form /}
 {/template}
+
 
 <form 
     fx:template="form" 
@@ -69,7 +70,7 @@
         form.js
     {/js}
 </form>
-    
+
 <label fx:template="label" for="{$item.field_id}">
     {apply floxim.main.text:text with $text = $item.label /}
 </label>
@@ -78,14 +79,14 @@
     {apply input with $field = $item /}
 </div>
     
-<div fx:template="errors" fx:e="errors" fx:if="count($errors)">
-    <div fx:e="error" fx:each="$errors as $error">
+<div fx:template="errors" fx:e="errors" fx:b="floxim.main.text:text" fx:styled="label:Стиль ошибки" fx:if="count($errors)">
+    <p fx:e="error" fx:each="$errors as $error">
         {if gettype($error) === 'string'}
             {$error /}
         {else}
             {$error.text /}
         {/if}
-    </div>
+    </p>
 </div>
     
 <div fx:template="messages" fx:e='messages' fx:if='count($messages)' class='fx_no_add'>

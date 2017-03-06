@@ -304,12 +304,15 @@ function init_controls($node) {
     */
 }
 
+/*
+
 $(function() {
     init_controls($('body'));
 });
 
 $('html').on('fx_infoblock_loaded', function(e) {
     var $form = $('.'+ns+'--form', e.target);
+    console.log($form, e);
     $form.trigger('fx_form_loaded');
 });
 
@@ -317,5 +320,11 @@ $('html').on('fx_form_loaded', function(e) {
     init_controls($(e.target.parentNode));
 });
 
+*/
+
+Floxim.handle('.'+ns+'--form', function() {
+    //console.log(this);
+    handle_ce($(this));
+});
 
 })(window.jQuery);

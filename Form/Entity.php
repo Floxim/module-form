@@ -244,6 +244,14 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             )
         );
         
+        if (fx::page()->isOverriden()) {
+            $input = $this->getInputs()->first();
+            if ($input) {
+                $this->addError('Так будет выглядеть сообщение об ошибке для поля!', $input['name']);
+            }
+            $this->addError('Так будет выглядеть сообщение об ошибке для формы!');
+        }
+        
         $tpl = fx::env()->getCurrentTemplate();
         $form_id = isset($this['form_id']) ? $this['form_id'] : 'form';
         if ($tpl) {
