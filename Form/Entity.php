@@ -103,17 +103,25 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return $this['messages']->find('when_to_show', 'before', '!=');
     }
     
-    public function validateValues()
+    public function validateValues($sent_only = true)
     {
         $that = $this;
-        $this['fields']->find('required', 1)->apply(function($f) use ($that) {
-            if (!$f->getValue()) {
+        
+        if ($sent_only && !$this->isSent()) {
+            return;
+        }
+        
+        $required = $this['fields']->find('required');
+        $required->apply(function($f) use ($that) {
+            if (!$f->getValue() && !$f['required_validated']) {
                 $that->addError(
                     'Нужно заполнить поле &laquo;'.$f['label'].'&raquo;',
                     $f['field_type'] === 'hidden' ? null : $f['name']
                 );
+                $f['required_validated'] = true;
             }
         });
+        
         if (!$this['validators']) {
             return;
         }
@@ -191,10 +199,16 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     
     public function getValue($field_name)
     {
-        $this->isSent();
+        $is_sent = $this->isSent();
         $field = $this->findField($field_name);
         if ($field) {
             return $field->getValue($field);
+        }
+        if ($is_sent) {
+            $input = $this->getInput();
+            if (isset($input[$field_name])) {
+                return $input[$field_name];
+            }
         }
         return null;
     }
@@ -245,11 +259,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         );
         
         if (fx::page()->isOverriden()) {
-            $input = $this->getInputs()->first();
-            if ($input) {
-                $this->addError('Так будет выглядеть сообщение об ошибке для поля!', $input['name']);
-            }
-            $this->addError('Так будет выглядеть сообщение об ошибке для формы!');
+            $this->prepareOverriden();
         }
         
         $tpl = fx::env()->getCurrentTemplate();
@@ -261,6 +271,34 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             }
         }
         $this['form_id'] = $form_id;
+        if ($this->isSent()) {
+            $this->hasErrors();
+        }
+    }
+    
+    protected function prepareOverriden()
+    {
+        if (!$this->hasErrors()) {
+            $this->addError('Так будет выглядеть сообщение об ошибке для формы!');
+        }
+        $inputs = $this->getInputs();
+        if ( count($inputs) === 0) {
+            $this->addField([
+                'name' => 'test_field_for_overriden_block',
+                'label' => 'Это поле-заглушка'
+            ]);
+            $inputs = $this->getInputs();
+        }
+        $input = $this->getInputs()->first();
+        if ($input) {
+            $this->addError('Так будет выглядеть сообщение об ошибке для поля!', $input['name']);
+        }
+        if (count($this->getButtons()) === 0) {
+            $this->addField([
+                'type' => 'submit',
+                'label' => 'Это кнопка'
+            ]);
+        }
     }
     
     public function handleCaptcha()
@@ -283,6 +321,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             'validation_closure' => function($form) use ($session_key) {
                 $sent_val = $form->getValue($session_key) * 1;
                 $session_val = fx::input('session', $session_key) * 1;
+                fx::log(debug_backtrace());
                 return (!$sent_val || $sent_val !== $session_val);
             } 
         ]);

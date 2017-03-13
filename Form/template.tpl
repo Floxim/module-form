@@ -1,7 +1,6 @@
-{template id="form_block" of="form, floxim.user.user:auth_form" name="Форма"}
+{template id="form_block" of="form, floxim.user.user:auth_form, *:form" name="Форма"}
     {apply form with $form /}
 {/template}
-
 
 <form 
     fx:template="form" 
