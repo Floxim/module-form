@@ -35,6 +35,35 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         
         $field['form'] = $this;
         
+        $validators = $field['validators'];
+        if ($validators) {
+            if (is_string($validators)) {
+                $validators = [$validators];
+                foreach ($validators as $validator) {
+                    if ($validator === 'email') {
+                        $validator = [
+                            'form' => $this,
+                            'text' => 'Укажите корректный e-mail',
+                            'affected_field' => $field['name'],
+                            'validation_closure' => function($form) use ($field) {
+                                $val = trim($field->getValue());
+                                if (empty($val)) {
+                                    return;
+                                }
+                                if (!preg_match("~[0-9a-z_\.\-]+@[a-z0-9\-]+\.[a-z0-9]+~", $val)) {
+                                    return true;
+                                }
+                            }
+                        ];
+                    }
+                    if (is_array($validator)) {
+                        $validator = fx::data('floxim.form.rule')->create($validator);
+                        $this['validators'] []= $validator;
+                    }
+                }
+            }
+        }
+        
         $this['fields'][]= $field;
         if ($this->isSent()) {
             $field->loadValue($this->getInput());
@@ -321,7 +350,6 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             'validation_closure' => function($form) use ($session_key) {
                 $sent_val = $form->getValue($session_key) * 1;
                 $session_val = fx::input('session', $session_key) * 1;
-                fx::log(debug_backtrace());
                 return (!$sent_val || $sent_val !== $session_val);
             } 
         ]);

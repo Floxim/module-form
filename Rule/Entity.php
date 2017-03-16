@@ -37,6 +37,10 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     
     public function getAffectedField()
     {
+        $stored_affected = $this['affected_field'];
+        if ($stored_affected) {
+            return $stored_affected;
+        }
         $res = null;
         $conds = $this->getConditions();
         $get = function($f) use (&$res, &$get) {
@@ -72,8 +76,13 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         return $res;
     }
     
+    protected $error_added = false;
+            
     public function check()
     {
+        if ($this->error_added) {
+            return;
+        }
         $form = $this['form'];
         if (isset($this['validation_closure'])) {
             $res = call_user_func($this['validation_closure'], $form);
@@ -96,6 +105,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         if ($res) {
             $field = $this->getAffectedField();
             $form->addError($this, $field);
+            $this->error_added = true;
         }
     }
 }

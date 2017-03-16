@@ -32,6 +32,9 @@ $('html').on('click', '.'+ns+'--form :input[type="submit"]', function() {
 
 $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     var $form = $(this);
+    if ($form.data('is_pending')) {
+        return false;
+    }
     var event_before = $.Event('fx_before_ajax_form_sent');
     $form.trigger(event_before);
     if (event_before.isDefaultPrevented()) {
@@ -49,6 +52,13 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     }
     
     var $ib = $form.closest('.fx_infoblock');
+    
+    $('button', $form).css({
+        opacity: 0.7,
+        cursor: 'default'
+    });
+    
+    $form.data('is_pending', true);
     
     Floxim.ajax({
         url: $form.attr('action'),
