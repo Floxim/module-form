@@ -133,6 +133,17 @@
     <span fx:if="$icon" fx:e="icon" class="{= fx::icon( $icon )}"></span>
 </button>
 
+<a 
+    href="{$button_link}"
+    {if $button_link_target}target="{$button_link_target}"{/if}
+    fx:template="button[$button_link]"
+    fx:e="button"
+    fx:b="button"
+    fx:styled="label:Стиль кнопки">
+    <span fx:e="label">{$label /}</span>
+    <span fx:if="$icon" fx:e="icon" class="{= fx::icon( $icon )}"></span>
+</a>
+
 <textarea
     fx:template="input[$field_type == 'textarea']"
     id="{$field_id}"
