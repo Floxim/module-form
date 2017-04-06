@@ -39,27 +39,27 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         if ($validators) {
             if (is_string($validators)) {
                 $validators = [$validators];
-                foreach ($validators as $validator) {
-                    if ($validator === 'email') {
-                        $validator = [
-                            'form' => $this,
-                            'text' => 'Укажите корректный e-mail',
-                            'affected_field' => $field['name'],
-                            'validation_closure' => function($form) use ($field) {
-                                $val = trim($field->getValue());
-                                if (empty($val)) {
-                                    return;
-                                }
-                                if (!preg_match("~[0-9a-z_\.\-]+@[a-z0-9\-]+\.[a-z0-9]+~", $val)) {
-                                    return true;
-                                }
+            }
+            foreach ($validators as $validator) {
+                if ($validator === 'email') {
+                    $validator = [
+                        'form' => $this,
+                        'text' => 'Укажите корректный e-mail',
+                        'affected_field' => $field['name'],
+                        'validation_closure' => function($form) use ($field) {
+                            $val = trim($field->getValue());
+                            if (empty($val)) {
+                                return;
                             }
-                        ];
-                    }
-                    if (is_array($validator)) {
-                        $validator = fx::data('floxim.form.rule')->create($validator);
-                        $this['validators'] []= $validator;
-                    }
+                            if (!preg_match("~[0-9a-z_\.\-]+@[a-z0-9\-]+\.[a-z0-9]+~", $val)) {
+                                return true;
+                            }
+                        }
+                    ];
+                }
+                if (is_array($validator)) {
+                    $validator = fx::data('floxim.form.rule')->create($validator);
+                    $this['validators'] []= $validator;
                 }
             }
         }
@@ -168,6 +168,10 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             );
         }
         if (is_array($m)) {
+            if (isset($m['header'])) {
+                $m['name'] = $m['header'];
+                unset($m['header']);
+            }
             $m = fx::data('floxim.form.message')->generate($m);
         }
         $this['messages'] []= $m;

@@ -60,11 +60,18 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     
     $form.data('is_pending', true);
     
-    Floxim.ajax({
+    var params = {
         url: $form.attr('action'),
         data: form_data,
         $block: $ib
-    }).then(function(data) {
+    };
+    
+    var $redraw = $form.data('fx_redraw');
+    if ($redraw && $redraw.length) {
+        params.redraw = $redraw;
+    }
+    
+    Floxim.ajax(params).then(function(data) {
         var $data = $(data);
         var $container = $ib.parent();
         $ib.before($data);
