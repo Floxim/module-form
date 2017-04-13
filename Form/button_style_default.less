@@ -6,23 +6,50 @@ vars:
         default: 
             - dark
             - color, alt 0 1
+        tab: main
     button_font:
         label: Шрифт
         type: css-font
+        tab: main
     button_color:
         type: palette
         transparent: true
         label: Цвет
         empty: false
+        tab: main
     button_padding:
         label: Отступ
         type: measures
         prop: padding
         step: 0.1
+        tab: main
     button_border:
         label: Рамка
         type: measures
         prop: borders
+        tab: main
+    button_shadow:
+        label: Тень
+        type: css-shadow
+        tab: main
+
+    hover_bg:
+        label: Фон
+        type: css-background
+        tab: hover
+    hover_color:
+        type: palette
+        transparent: true
+        label: Цвет
+        empty: true
+        tab: hover
+    hover_shadow:
+        label: Тень
+        type: css-shadow
+        tab: hover
+tabs:
+    main: Кнопка
+    hover: При наведении
 */
 
 .button_style_default(
@@ -31,10 +58,17 @@ vars:
     @button_color: main 0;
     @button_padding: 0.3em 1em 0.3em 1em;
     @button_border: none;
+    @button_shadow: none;
+    
+    @hover_bg: none;
+    @hover_color: none;
+    @hover_shadow: none;
 ) {
     padding:@button_padding;
     cursor:pointer;
     .border(@button_border);
+    
+    .box-shadow(@button_shadow);
     
     & when (@button_border = none) {
         border:none;
@@ -62,5 +96,25 @@ vars:
     
     &:not(:last-child) {
         margin-right:2rem;
+    }
+    
+    transition:all 0.4s ease;
+    
+    &:hover {
+        & when not(@hover_bg = none) {
+            .background(@hover_bg);
+            & when not(@hover_color = none) {
+                .tcolor-on-bg(@hover_color; @hover_bg);
+            }
+            & when (@hover_color = none) {
+                .tcolor-on-bg(@button_color; @hover_bg);
+            }
+        }
+        & when (@hover_bg = none) and not(@hover_color = none) {
+            .tcolor-on-bg(@hover_color; @button_bg);
+        }
+        & when not(@hover_shadow = none) {
+            .box-shadow(@hover_shadow);
+        }
     }
 }
