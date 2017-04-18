@@ -15,7 +15,9 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
     public function addFields($fields)
     {
         foreach ($fields as $keyword => $field) {
-            $field['name'] = $keyword;
+            if (!isset($field['name'])) {
+                $field['name'] = $keyword;
+            }
             $this->addField($field);
         }
         return $this;
