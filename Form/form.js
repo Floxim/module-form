@@ -24,7 +24,7 @@ var QueryStringToHash;
     
 
 
-$('html').on('click', '.'+ns+'--form :input[type="submit"]', function() {
+$('html').on('click', '.'+ns+'--form :input[type="submit"], .'+ns+'--form button', function() {
     var $b = $(this),
         $form = $b.closest('form');
     $form.data('pressed_button_name', $b.attr('name'));
@@ -67,6 +67,9 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     };
     
     var $redraw = $form.data('fx_redraw');
+    if (typeof $redraw === 'string') {
+        $redraw = $($redraw);
+    }
     if ($redraw && $redraw.length) {
         params.redraw = $redraw;
     }

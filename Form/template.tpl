@@ -15,7 +15,9 @@
     action="" 
     {if $action}data-ajax-action="{$action}"{/if}
     fx:styled-inline
-    method="post">
+    method="post"
+    {if $form.redraw}data-fx_redraw="{$form.redraw | htmlspecialchars /}"{/if}
+    >
     
     {first}
         {set $form = $ /}
@@ -38,22 +40,7 @@
         
         <div fx:e="body">
             <div fx:e="inputs">
-                <div fx:each="$form.getInputs() as $field" 
-                     fx:e="row {if $field.has_errors} has-errors{/if}" 
-                     fx:b="field type_{$field.field_type /}">
-                    {apply floxim.ui.box:box with $item = $field, $box_id = 'fieldbox' /}
-                    {*
-                    <label fx:e="label" for="{$field.field_id}">{$field.label /}</label>
-                    {apply errors with $errors = $field.errors /}
-                    <div fx:e="control">
-                        <label 
-                            fx:if="$field.icon" 
-                            for="{$field.field_id}" 
-                            fx:e="icon" class="{= fx::icon( $field.icon ) }"></label>
-                        {apply input /}
-                    </div>
-                    *}
-                </div>
+                {apply inputs /}
             </div>
 
             <div fx:e="buttons">
@@ -69,6 +56,14 @@
         form.js
     {/js}
 </form>
+
+{template id="inputs"}
+    <div fx:each="$form.getInputs() as $field" 
+        fx:e="row {if $field.has_errors} has-errors{/if}" 
+        fx:b="field type_{$field.field_type /}">
+       {apply floxim.ui.box:box with $item = $field, $box_id = 'fieldbox' /}
+   </div>
+{/template}
 
 <label fx:template="label" for="{$item.field_id}">
     {apply floxim.main.text:text with $text = $item.label /}
@@ -128,6 +123,7 @@
     fx:styled="label:Стиль кнопки"
     {if $button_data}data-button_data='{$button_data | json_encode /}'{/if}
     {if $field_id}id="{$field_id}"{/if}
+    name="{$field.name /}"
     >
     <span fx:e="label">{$label /}</span>
     <span fx:if="$icon" fx:e="icon" class="{= fx::icon( $icon )}"></span>
@@ -157,3 +153,25 @@
     <input type="text" name="fakename" tabindex="-1" style="opacity:0;"/>
     <input type="password" name="fakepassword" tabindex="-1" style="opacity:0;" />
 </div>
+    
+    
+<div fx:template="input[$field.field_type == 'group']" fx:b="group">
+    <div fx:each="$field.fields as $sub_field">
+        {set $field = $sub_field /}
+        {apply input with $field /}
+    </div>
+</div>
+    
+<select 
+    fx:template="input[$field_type == 'select']"
+    id="{$field_id /}"
+    fx:e="input type_select"
+    name="{$name /}">
+    {set $field_value = $value /}
+    <option 
+        fx:each="$values as $val"
+        value="{$val.value /}"
+        {if $field_value === $val.value}selected="selected"{/if}>
+        {$val.name /}
+    </option>
+</select>
