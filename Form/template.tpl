@@ -52,7 +52,7 @@
     {/if}
     
     {js}
-        FX_JQUERY_PATH as jquery
+        FX_JQUERY_PATH
         form.js
     {/js}
 </form>

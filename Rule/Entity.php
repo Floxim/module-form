@@ -88,7 +88,7 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
             $res = call_user_func($this['validation_closure'], $form);
         } else {
             $conds = $this->getConditions();
-            $res = \Floxim\Floxim\Field\Condition::check(
+            $res = \Floxim\Floxim\Field\FieldCondition::check(
                 $conds, 
                 array(
                     'getters' => array(
