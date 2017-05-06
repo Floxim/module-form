@@ -53,6 +53,7 @@
     
     {js}
         FX_JQUERY_PATH
+        Floxim.js from floxim.ui.js
         form.js
     {/js}
 </form>
