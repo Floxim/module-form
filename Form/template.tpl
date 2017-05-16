@@ -168,7 +168,7 @@
     id="{$field_id /}"
     fx:e="input type_select"
     name="{$name /}">
-    {set $field_value = $value /}
+    {default $field_value = $value /}
     <option 
         fx:each="$values as $val"
         value="{$val.value /}"
