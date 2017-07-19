@@ -65,6 +65,22 @@ vars:
             .font(@input_font);
             width:100%;
         }
+        #_type_select {
+            padding:@input_padding;
+            padding-right: extract(@input_padding, 2) + 1.4em;
+            padding-left: extract(@input_padding, 4) + 0.3em;
+            .border(@input_border);
+            .background(@input_bg);
+            .tcolor-on-bg(@input_color; @input_bg);
+            .font(@input_font);
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image:url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjMyMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayIgdmVyc2lvbj0iMS4xIj4NCiAgICA8cG9seWdvbiBwb2ludHM9IjYwLDE0MCAxNDAsMTQwIDEwMCwxOTUiDQogICAgICAgICAgICBmaWxsPSJ0cmFuc3BhcmVudCIgIHN0cm9rZT0iIzAwMDAwMCIgc3Ryb2tlLXdpZHRoPSIxMCIgc3Ryb2tlLWxpbmVqb2luPSJyb3VuZCIgLz4NCjwvc3ZnPg==');
+            background-size:contain;
+            background-repeat:no-repeat;
+            background-position:100% 50%;
+        }
     }
     
     #__input_has-icon {
