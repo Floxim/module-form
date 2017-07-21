@@ -61,6 +61,13 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         
         $m->to($user['email']);
         
+        $extra_mails = fx::config('form.extra_mails');
+        if ($extra_mails) {
+            foreach ( (array) $extra_mails as $extra_mail) {
+                $m->to($extra_mail);
+            }
+        }
+        
         $m->subject('Сообщение формы «'.$form['name'].'»');
         
         $show_fields = function($fields) {
@@ -83,7 +90,10 @@ class Controller extends \Floxim\Floxim\Component\Basic\Controller
         
         $fields = array();
         foreach ($form->getInputs() as $field) {
-            $fields[$field['label']] = strip_tags($field->getValue());
+            fx::log('fld', $field, $field['is_captcha']);
+            if (!$field['is_captcha']) {
+                $fields[$field['label']] = strip_tags($field->getValue());
+            }
         }
         
         $msg .= $show_fields($fields);

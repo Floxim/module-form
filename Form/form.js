@@ -54,7 +54,7 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     var $ib = $form.closest('.fx_infoblock');
     
     $('button', $form).css({
-        opacity: 0.7,
+        opacity: 0.5,
         cursor: 'default'
     });
     

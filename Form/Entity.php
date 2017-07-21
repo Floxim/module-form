@@ -348,7 +348,8 @@ class Entity extends \Floxim\Floxim\Component\Basic\Entity
         $this->addField([
             'name' => $session_key,
             'label' => 'Сколько будет '.($cv - $extracted).' плюс '.$nums[$extracted].'?',
-            'display_value' => ''
+            'display_value' => '',
+            'is_captcha' => true
         ]);
         $this['validators'] []= fx::data('floxim.form.rule')->create([
             'text' => 'Для отправки этой формы нужно включить JavaScript (и не быть роботом)',
