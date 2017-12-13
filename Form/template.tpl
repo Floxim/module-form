@@ -62,7 +62,7 @@
     <div fx:each="$form.getInputs() as $field" 
         fx:e="row {if $field.has_errors} has-errors{/if}" 
         fx:b="field type_{$field.field_type /}">
-       {apply floxim.ui.box:box with $item = $field, $box_id = 'fieldbox' /}
+       {apply floxim.ui.box:box with $item = $field, $box_id = 'fieldbox', $field_source = 'item' /}
    </div>
 {/template}
 
