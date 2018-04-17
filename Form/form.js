@@ -1,5 +1,5 @@
 (function($) {
-    
+
 var ns = 'floxim--form--form';
 
 var QueryStringToHash;
@@ -10,7 +10,7 @@ var QueryStringToHash;
     var decode = function (str) {return decodeURIComponent( str.replace(decodeRE, " ") );};
     QueryStringToHash = function(query) {
         var params = {}, e;
-        while ( e = re.exec(query) ) { 
+        while ( e = re.exec(query) ) {
             var k = decode( e[1] ), v = decode( e[2] );
             if (k.substring(k.length - 2) === '[]') {
                 k = k.substring(0, k.length - 2);
@@ -21,7 +21,7 @@ var QueryStringToHash;
         return params;
     };
 })();
-    
+
 
 
 $('html').on('click', '.'+ns+'--form :input[type="submit"], .'+ns+'--form button', function() {
@@ -40,32 +40,33 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     if (event_before.isDefaultPrevented()) {
         return false;
     }
-    
+
     var button_name = $form.data('pressed_button_name');
     if (button_name) {
         var $button_placeholder = $('<input type="hidden" name="'+button_name+'" value="1" />');
         $form.append($button_placeholder);
     }
     var form_data = QueryStringToHash($form.serialize());
+
     if (button_name) {
         $button_placeholder.remove();
     }
-    
+
     var $ib = $form.closest('.fx_infoblock');
-    
+
     $('button', $form).css({
         opacity: 0.5,
         cursor: 'default'
     });
-    
+
     $form.data('is_pending', true);
-    
+
     var params = {
         url: $form.attr('action'),
         data: form_data,
         $block: $ib
     };
-    
+
     var $redraw = $form.data('fx_redraw');
     if (typeof $redraw === 'string') {
         $redraw = $($redraw);
@@ -73,7 +74,7 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
     if ($redraw && $redraw.length) {
         params.redraw = $redraw;
     }
-    
+
     Floxim.ajax(params).then(function(data) {
         var $data = $(data);
         var $container = $ib.parent();
@@ -89,9 +90,9 @@ $('html').on('submit', '.'+ns+'--form_ajax', function(e) {
 
 var handle_date_field = function($block) {
     $block.ctx('fx-date-field');
-    
+
     var $inp  = $block.find('.fx_input');
-    
+
     function export_parts() {
         var res = '',
             months = {
@@ -100,7 +101,7 @@ var handle_date_field = function($block) {
             },
             filled = true;
         $.each(
-            'd,m,y,h,i'.split(','), 
+            'd,m,y,h,i'.split(','),
             function(index, item) {
                 var c_val = $block.elem('part').byMod('type', item).val();
                 if (!c_val) {
@@ -125,7 +126,7 @@ var handle_date_field = function($block) {
             }
         }
     };
-    
+
     function format_date(d) {
         var res = $.datepicker.formatDate("yy-mm-dd", d );
         res += ' ';
@@ -135,7 +136,7 @@ var handle_date_field = function($block) {
         res += (m < 10 ? '0' : '')+m+':00';
         return res;
     }
-    
+
     $block.elem('part').on('keydown',  function(e) {
         var $part = $(this),
             part_val = $part.val(),
@@ -143,9 +144,9 @@ var handle_date_field = function($block) {
             min = $part.data('min') || 0,
             len = $part.data('len'),
             strikes = ( $part.data('strikes') || 0) + 1;
-        
+
         $part.data('strikes', strikes);
-    
+
         if (e.which === 40 || e.which === 38) { // down or up
             part_val = part_val*1;
             part_val += (e.which === 40 ? -1 : 1);
@@ -154,11 +155,11 @@ var handle_date_field = function($block) {
             } else if (part_val > max) {
                 part_val = min;
             }
-            
+
             if (len === 2 && part_val < 10) {
                 part_val = '0'+part_val;
             }
-            
+
             $part.val(part_val);
             return false;
         }
@@ -174,26 +175,26 @@ var handle_date_field = function($block) {
             min = $part.data('min'),
             max = $part.data('max'),
             len = $part.data('len');
-        
+
         if (part_val.length > len) {
             part_val = part_val.slice(0, len);
         }
-        
+
         if (part_val.match(/[^0-9]/)) {
             part_val = part_val.replace(/[^0-9]+/g, '');
         }
-        
+
         var int_val = part_val*1;
-        
+
         if (int_val > max) {
             part_val = max;
         }
         if (part_val + '' !== $part.val()) {
             $part.val(part_val);
         }
-        
+
         export_parts();
-        
+
         if (this.selectionStart !== undefined && this.selectionStart === this.selectionEnd) {
             if (this.selectionStart === 0 && e.which === 37) {
                 var $prev = $part.prevAll('.fx-date-field__part').first();
@@ -207,11 +208,11 @@ var handle_date_field = function($block) {
                 }
             }
         }
-        
-        if (e.which < 48 || e.which > 57 || !$part.data('strikes')) { 
+
+        if (e.which < 48 || e.which > 57 || !$part.data('strikes')) {
             return;
         }
-        
+
         if (part_val.length === $part.data('len')) {
             var int_val = part_val*1;
             if (int_val >= min && int_val <= max) {
@@ -249,7 +250,7 @@ $block.elem('datepicker_icon').click(function() {
 };
 
 function base64_decode( data ) {	// Decodes data encoded with MIME base64
-	// 
+	//
 	// +   original by: Tyler Akins (http://rumkin.com)
 
 
@@ -308,7 +309,7 @@ function init_controls($node) {
         handle_date_field($(this));
     });
     */
-   
+
     $('.'+ns+'--form', $node).each(function() {
         handle_ce($(this));
     });
@@ -347,4 +348,4 @@ Floxim.handle('.'+ns+'--form', function() {
     handle_ce($(this));
 });
 
-})(window.jQuery);
+})(window.$fxj || window.jQuery);

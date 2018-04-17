@@ -47,6 +47,13 @@
                 {$form.getButtons() || :input /}
             </div>
         </div>
+        <div fx:e="footer-text">
+            {%form_footer_text label="Текст под формой"}
+                <p>Нажимая на кнопку, вы даете согласие на обработку персональных данных
+                    и соглашаетесь c политикой конфиденциальности.
+                </p>
+            {/%}
+        </div>
     {else}
         {apply messages with $messages = $form.messages_after /}
     {/if}
@@ -66,12 +73,19 @@
    </div>
 {/template}
 
-<label fx:template="label" for="{$item.field_id}">
-    {apply floxim.main.text:text with $text = $item.label /}
+<label fx:template="label" for="{$item.field_id}" fx:nows>
+    {@param name="show_asterisk" label="Показывать звездочку?" type="checkbox" /}
+    {set $label_text}
+        {$item.label /}
+        {if $item.required && $show_asterisk}
+            &nbsp;<span class="floxim--form--form--form__asterisk">*</span>
+        {/if}
+    {/set}
+    {apply floxim.main.text:text with $text = $label_text /}
 </label>
 
 <div fx:b="control" fx:template="control" fx:styled="Стиль поля">
-    {apply input with $field = $item /}
+    {apply input with $field = $item, $item /}
 </div>
     
 <div fx:template="errors" fx:e="errors" fx:b="floxim.main.text:text" fx:styled="label:Стиль ошибки" fx:if="count($errors)">
@@ -97,7 +111,7 @@
     id="{$field_id}"
     type="{$field_type}"
     fx:e="input type_{$field_type} {if $field.icon}has-icon{/if}"
-    autocomplete="off"
+    {*autocomplete="off"*}
     {if $field_type === 'text' || $field_type === 'password'}
         placeholder="{$placeholder /}"
     {/if}
@@ -162,6 +176,28 @@
         {apply input with $field /}
     </div>
 </div>
+
+<div
+    fx:template="input[$field_type === 'select' && $field_view === 'radio']"
+    fx:e="input type_radio"
+    fx:b="radio layout_{$layout /}">
+    {default $field_value = $value ? $value : $values[0].value /}
+    {first}
+        {set $layout = $field.getTotalLength() > 50 ? 'vertical' : 'horizontal' /}
+        {css}radio.less{/css}
+    {/first}
+    {set $field_name = $name /}
+    <label fx:each="$values as $val" fx:e="item">
+        <input
+            type="radio"
+            name="{$field_name /}"
+            value="{$val.value /}"
+            {if $val.value == $field_value}checked="checked"{/if}
+            fx:e="input"
+        />
+        <span fx:e="label">{$val.name /}</span>
+    </label>
+</div>
     
 <select 
     fx:template="input[$field_type == 'select']"
@@ -172,7 +208,7 @@
     <option 
         fx:each="$values as $val"
         value="{$val.value /}"
-        {if $field_value === $val.value}selected="selected"{/if}>
+        {if $field_value == $val.value}selected="selected"{/if}>
         {$val.name /}
     </option>
 </select>

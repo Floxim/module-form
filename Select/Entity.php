@@ -18,8 +18,19 @@ class Entity extends \Floxim\Form\Field\Entity
         foreach ($vals as $k => $v) {
             if (!is_array($v)) {
                 $v = ['value' => $v, 'name' => $v];
+            } elseif (!isset($v['value']) && !isset($v['name']) && count($v) === 2) {
+                $v = ['value' => $v[0], 'name' => $v[1]];
             }
             $res[]= $v;
+        }
+        return $res;
+    }
+
+    public function getTotalLength ()
+    {
+        $res = 0;
+        foreach ($this['values'] as $val) {
+            $res += mb_strlen($val['name']);
         }
         return $res;
     }
