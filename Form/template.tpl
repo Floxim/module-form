@@ -48,12 +48,9 @@
             </div>
         </div>
         <div fx:e="footer-text">
-            {%form_footer_text label="Текст под формой"}
-                <p>Нажимая на кнопку, вы даете согласие на обработку персональных данных
-                    и соглашаетесь c политикой конфиденциальности.
-                </p>
-            {/%}
+            {%form_footer_text label="Текст под формой" type="html" linebreaks="false" /}
         </div>
+
     {else}
         {apply messages with $messages = $form.messages_after /}
     {/if}
